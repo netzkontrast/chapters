@@ -88,6 +88,15 @@ async def create_margin(
     db.add(margin)
     db.commit()
     db.refresh(margin)
+    
+    # Award XP for margin
+    from app.services.muse_progression import award_xp
+    award_xp(db, current_user, "margin")
+    
+    # Create notification for chapter author
+    from app.services.notification_service import notify_margin_added
+    notify_margin_added(db, margin, chapter)
+    
     return margin
 
 

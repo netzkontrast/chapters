@@ -81,6 +81,8 @@ class UserResponse(BaseModel):
     email: str
     username: str
     open_pages: int
+    muse_level: str
+    muse_xp: int
     created_at: datetime
     
     class Config:

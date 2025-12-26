@@ -34,6 +34,7 @@ class Chapter(Base):
     
     # Engagement metrics
     heart_count = Column(Integer, default=0, nullable=False)
+    theme_count = Column(Integer, default=0, nullable=False)
     
     # Publishing and editing
     published_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False, index=True)
@@ -50,6 +51,7 @@ class Chapter(Base):
     bookmarks = relationship("Bookmark", back_populates="chapter", cascade="all, delete-orphan")
     margins = relationship("Margin", back_populates="chapter", cascade="all, delete-orphan")
     embedding = relationship("ChapterEmbedding", back_populates="chapter", uselist=False, cascade="all, delete-orphan")
+    themes = relationship("Theme", secondary="chapter_themes", back_populates="chapters")
     
     def __repr__(self):
         return f"<Chapter(id={self.id}, title='{self.title}', author_id={self.author_id})>"

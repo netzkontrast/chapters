@@ -6,76 +6,105 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { LoadingState } from "@/components/LoadingState"
+import { MarginsDrawer } from "@/components/margins/MarginsDrawer"
+import { ReadingProgress } from "@/components/ReadingProgress"
 import { useChapter, useMargins, useHeartChapter, useBookmarkChapter } from "@/hooks/useLibrary"
+import { apiClient } from "@/lib/api-client"
+import { motion } from "framer-motion"
 import type { ChapterBlock } from "@/services/library"
 
 function ChapterBlockComponent({ block }: { block: ChapterBlock }) {
   switch (block.block_type) {
     case 'text':
       return (
-        <div className="prose prose-lg max-w-none">
-          <p className="text-foreground leading-relaxed whitespace-pre-wrap">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="prose prose-lg max-w-none"
+        >
+          <p className="text-foreground leading-[1.8] text-lg font-serif whitespace-pre-wrap tracking-wide">
             {block.content.text}
           </p>
-        </div>
+        </motion.div>
       )
 
     case 'quote':
       return (
-        <blockquote className="border-l-4 border-border pl-6 py-4 my-6 bg-muted/20">
-          <p className="text-lg italic text-foreground leading-relaxed">
-            {block.content.text}
+        <motion.blockquote
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="border-l-4 border-primary/50 pl-8 py-6 my-8 bg-primary/5 rounded-r-lg"
+        >
+          <p className="text-xl italic text-foreground leading-[1.8] font-serif">
+            "{block.content.text}"
           </p>
           {block.content.attribution && (
-            <footer className="text-sm text-muted-foreground mt-2">
+            <footer className="text-sm text-muted-foreground mt-4 font-sans">
               — {block.content.attribution}
             </footer>
           )}
-        </blockquote>
+        </motion.blockquote>
       )
 
     case 'image':
       return (
-        <figure className="my-8">
+        <motion.figure
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+          className="my-10"
+        >
           <img
             src={block.content.url}
             alt={block.content.caption || ''}
-            className="w-full rounded-lg border border-warmGray"
+            className="w-full rounded-xl shadow-lg border border-border"
           />
           {block.content.caption && (
-            <figcaption className="text-sm text-muted-foreground text-center mt-2">
+            <figcaption className="text-sm text-muted-foreground text-center mt-4 italic">
               {block.content.caption}
             </figcaption>
           )}
-        </figure>
+        </motion.figure>
       )
 
     case 'audio':
       return (
-        <div className="my-8 bg-warmGray/10 border border-warmGray rounded-lg p-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="my-10 bg-card border border-border rounded-xl p-6 shadow-sm"
+        >
           <audio controls className="w-full">
             <source src={block.content.url} />
             Your browser does not support audio playback.
           </audio>
           {block.content.caption && (
-            <p className="text-sm text-muted-foreground mt-2">{block.content.caption}</p>
+            <p className="text-sm text-muted-foreground mt-4">{block.content.caption}</p>
           )}
-        </div>
+        </motion.div>
       )
 
     case 'video':
       return (
-        <div className="my-8">
-          <video controls className="w-full rounded-lg border border-warmGray">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+          className="my-10"
+        >
+          <video controls className="w-full rounded-xl border border-border shadow-lg">
             <source src={block.content.url} />
             Your browser does not support video playback.
           </video>
           {block.content.caption && (
-            <p className="text-sm text-muted-foreground text-center mt-2">
+            <p className="text-sm text-muted-foreground text-center mt-4 italic">
               {block.content.caption}
             </p>
           )}
-        </div>
+        </motion.div>
       )
 
     default:
@@ -104,6 +133,12 @@ export default function ChapterPage() {
     bookmarkMutation.mutate({ chapterId: chapter.id, isBookmarked: chapter.is_bookmarked })
   }
 
+  const handleAddMargin = async (text: string) => {
+    await apiClient.post(`/margins/chapters/${chapterId}`, { text })
+    // Refetch margins after adding
+    window.location.reload() // Simple refresh for now
+  }
+
   if (chapterLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -125,6 +160,8 @@ export default function ChapterPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <ReadingProgress />
+      
       {/* Header */}
       <header className="border-b border-border bg-card sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -140,7 +177,7 @@ export default function ChapterPage() {
               disabled={heartMutation.isPending}
               className={`${chapter.is_hearted ? "bg-primary/10 text-foreground" : "text-foreground"}`}
             >
-              💖 {chapter.heart_count}
+              💖 {chapter.is_hearted ? "Hearted" : "Heart"}
             </Button>
             <Button
               variant={chapter.is_bookmarked ? "secondary" : "ghost"}
@@ -165,19 +202,24 @@ export default function ChapterPage() {
 
       {/* Chapter Content */}
       <article className="container mx-auto px-4 py-12">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           {/* Chapter Header */}
-          <header className="mb-12">
-            <h1 className="text-4xl font-serif font-bold text-foreground mb-4">
+          <motion.header
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="mb-16"
+          >
+            <h1 className="text-5xl font-serif font-bold text-foreground mb-6 leading-tight">
               {chapter.title}
             </h1>
             <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
               {chapter.author?.book_id ? (
                 <Link
                   href={`/books/${chapter.author.book_id}`}
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-primary transition-colors font-medium"
                 >
-                  by <span className="font-medium">{chapter.author.username}</span>
+                  by {chapter.author.username}
                 </Link>
               ) : (
                 <span>
@@ -185,64 +227,53 @@ export default function ChapterPage() {
                 </span>
               )}
               <span>•</span>
-              <span>{new Date(chapter.published_at).toLocaleDateString()}</span>
+              <span>{new Date(chapter.published_at).toLocaleDateString('en-US', { 
+                month: 'long', 
+                day: 'numeric', 
+                year: 'numeric' 
+              })}</span>
             </div>
             {chapter.mood && (
-              <p className="text-muted-foreground italic">{chapter.mood}</p>
+              <p className="text-muted-foreground italic text-lg mb-4">{chapter.mood}</p>
             )}
-            {chapter.theme && (
-              <p className="text-sm text-muted-foreground mt-2">Theme: {chapter.theme}</p>
+            
+            {/* Themes */}
+            {chapter.themes && chapter.themes.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-6">
+                {chapter.themes.map((theme: any) => (
+                  <Link
+                    key={theme.id}
+                    href={`/themes/${theme.slug}`}
+                    className="text-sm px-4 py-2 bg-primary/10 text-primary rounded-full hover:bg-primary/20 transition-all hover:scale-105"
+                  >
+                    {theme.emoji} {theme.name}
+                  </Link>
+                ))}
+              </div>
             )}
-          </header>
+          </motion.header>
 
           {/* Chapter Blocks */}
-          <div className="space-y-6 font-serif text-lg leading-relaxed">
+          <div className="space-y-8 font-serif text-lg leading-relaxed">
             {chapter.blocks.map((block) => (
               <ChapterBlockComponent key={block.id} block={block} />
             ))}
           </div>
+
+          {/* End Spacer */}
+          <div className="h-24" />
         </div>
       </article>
 
       {/* Margins Section */}
       {showMargins && (
-        <aside className="border-t border-border bg-card">
-          <div className="container mx-auto px-4 py-12">
-            <div className="max-w-2xl mx-auto">
-              <h2 className="text-2xl font-serif font-semibold text-foreground mb-6">
-                Margins
-              </h2>
-
-              {marginsLoading ? (
-                <div className="text-center py-12">
-                  <LoadingState message="Loading margins..." />
-                </div>
-              ) : margins && margins.length > 0 ? (
-                <div className="space-y-4">
-                  {margins.map((margin) => (
-                    <div
-                      key={margin.id}
-                      className="bg-background border border-border rounded-lg p-6 hover:border-primary/50 transition-colors"
-                    >
-                      <div className="flex items-start justify-between gap-4 mb-3">
-                        <span className="font-medium text-foreground">{margin.username}</span>
-                        <span className="text-xs text-muted-foreground whitespace-nowrap">
-                          {new Date(margin.created_at).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <p className="text-foreground leading-relaxed">{margin.text}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-16">
-                  <div className="text-5xl mb-4">💬</div>
-                  <p className="text-lg text-muted-foreground mb-2">No margins yet</p>
-                  <p className="text-sm text-muted-foreground">Be the first to leave a comment</p>
-                </div>
-              )}
-            </div>
-          </div>
+        <aside className="fixed right-0 top-0 bottom-0 w-96 bg-card border-l border-border shadow-lg z-20 overflow-hidden">
+          <MarginsDrawer
+            chapterId={chapterId}
+            margins={margins || []}
+            isLoading={marginsLoading}
+            onAddMargin={handleAddMargin}
+          />
         </aside>
       )}
     </div>

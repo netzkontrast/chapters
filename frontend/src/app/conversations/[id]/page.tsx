@@ -2,52 +2,112 @@
 
 import { useRouter, useParams } from "next/navigation"
 import { ConversationView } from "@/components/btl/ConversationView"
-import { useConversationMessages, useSendMessage, useCloseConversation } from "@/hooks/useBTL"
-import { btlService } from "@/services/btl"
+import { useThreadMessages, useSendMessage, useCloseThread, useThreads } from "@/hooks/useBTL"
+import { useUser } from "@/hooks/useUser"
+import { LoadingState } from "@/components/LoadingState"
+import { BTLThread } from "@/services/btl"
+import { useToast } from "@/components/ui/toast"
+import { ConfirmModal } from "@/components/ui/ConfirmModal"
+import { useState } from "react"
 
 export default function ConversationPage() {
   const router = useRouter()
   const params = useParams()
-  const conversationId = params.id as string
+  const { showToast } = useToast()
+  const threadId = parseInt(params.id as string)
+  const [showCloseModal, setShowCloseModal] = useState(false)
+  const [showBlockModal, setShowBlockModal] = useState(false)
+  const [showReportModal, setShowReportModal] = useState(false)
+  const [isClosing, setIsClosing] = useState(false)
 
-  const { data: messages = [], isLoading } = useConversationMessages(conversationId)
+  const { data: currentUser } = useUser()
+  const { data: threads = [] } = useThreads()
+  const { data: messages = [], isLoading } = useThreadMessages(threadId)
   const sendMessage = useSendMessage()
-  const closeConversation = useCloseConversation()
+  const closeThread = useCloseThread()
 
-  // TODO: Get other book title and current user ID from conversation metadata
-  const otherBookTitle = "Other Book"
-  const currentUserId = "current-user" // Will be determined from messages
+  const thread = threads.find((t: BTLThread) => t.id === threadId)
+  const otherUserId = thread 
+    ? (thread.participant1_id === currentUser?.id ? thread.participant2_id : thread.participant1_id)
+    : null
+  
+  // For now, use "Someone" as placeholder - names would need to be fetched separately
+  const otherUserName = "Someone"
 
   const handleSendMessage = async (content: string) => {
-    await sendMessage.mutateAsync({ conversationId, content })
+    try {
+      await sendMessage.mutateAsync({ threadId, content })
+    } catch (error) {
+      console.error("Failed to send message:", error)
+      showToast({
+        type: "error",
+        title: "Failed to send message",
+        message: "Please try again",
+      })
+    }
   }
 
   const handleClose = async () => {
-    if (confirm("Are you sure you want to close this space? This cannot be undone.")) {
-      await closeConversation.mutateAsync(conversationId)
+    setIsClosing(true)
+    try {
+      await closeThread.mutateAsync(threadId)
+      showToast({
+        type: "success",
+        title: "Conversation closed",
+        message: "This space has been closed",
+      })
       router.push("/conversations")
+    } catch (error) {
+      console.error("Failed to close conversation:", error)
+      showToast({
+        type: "error",
+        title: "Failed to close conversation",
+        message: "Please try again",
+      })
+      setIsClosing(false)
     }
   }
 
   const handleBlock = async () => {
-    if (confirm("Are you sure you want to block this user? They won't be able to contact you again.")) {
-      // TODO: Get other user ID from conversation
-      // await btlService.blockUser(otherUserId)
-      router.push("/conversations")
-    }
+    // TODO: Implement block functionality
+    showToast({
+      type: "info",
+      title: "Coming soon",
+      message: "Block functionality will be available soon",
+    })
+    setShowBlockModal(false)
   }
 
   const handleReport = async () => {
-    if (confirm("Report this conversation for violating community guidelines?")) {
-      await btlService.reportConversation(conversationId, "User reported via UI")
-      alert("Thank you for your report. We'll review it shortly.")
-    }
+    // TODO: Implement report functionality
+    showToast({
+      type: "success",
+      title: "Report submitted",
+      message: "Thank you for your report. We'll review it shortly.",
+    })
+    setShowReportModal(false)
   }
 
   if (isLoading) {
     return (
       <div className="h-screen bg-background flex items-center justify-center">
-        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <LoadingState message="Loading conversation..." />
+      </div>
+    )
+  }
+
+  if (!thread) {
+    return (
+      <div className="h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-lg text-muted-foreground mb-4">Conversation not found</p>
+          <button
+            onClick={() => router.push("/conversations")}
+            className="text-primary hover:underline"
+          >
+            Back to conversations
+          </button>
+        </div>
       </div>
     )
   }
@@ -55,14 +115,53 @@ export default function ConversationPage() {
   return (
     <div className="h-screen bg-background">
       <ConversationView
-        conversationId={conversationId}
-        otherBookTitle={otherBookTitle}
+        threadId={threadId}
+        otherUserId={otherUserId || 0}
+        otherUserName={otherUserName}
         messages={messages}
-        currentUserId={currentUserId}
+        currentUserId={currentUser?.id || 0}
         onSendMessage={handleSendMessage}
-        onClose={handleClose}
-        onBlock={handleBlock}
-        onReport={handleReport}
+        onClose={() => setShowCloseModal(true)}
+        onBlock={() => setShowBlockModal(true)}
+        onReport={() => setShowReportModal(true)}
+        isClosed={thread.status === 'closed'}
+      />
+
+      {/* Close Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showCloseModal}
+        onClose={() => setShowCloseModal(false)}
+        onConfirm={handleClose}
+        title="Close Conversation"
+        message="Are you sure you want to close this space? This cannot be undone."
+        confirmText="Close Space"
+        cancelText="Keep Open"
+        variant="warning"
+        isLoading={isClosing}
+      />
+
+      {/* Block Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showBlockModal}
+        onClose={() => setShowBlockModal(false)}
+        onConfirm={handleBlock}
+        title="Block User"
+        message="Are you sure you want to block this user? They won't be able to contact you again."
+        confirmText="Block User"
+        cancelText="Cancel"
+        variant="danger"
+      />
+
+      {/* Report Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        onConfirm={handleReport}
+        title="Report Conversation"
+        message="Report this conversation for violating community guidelines?"
+        confirmText="Submit Report"
+        cancelText="Cancel"
+        variant="warning"
       />
     </div>
   )

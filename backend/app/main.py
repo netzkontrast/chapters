@@ -99,9 +99,11 @@ from app.margins.router import router as margins_router
 from app.library.router import router as library_router
 from app.muse.router import router as muse_router
 from app.btl.router import router as btl_router
+from app.search.router import router as search_router
 from app.moderation.router import router as moderation_router
 from app.privacy.router import router as privacy_router
 from app.media.router import router as media_router
+from app.notifications.router import router as notifications_router
 
 app.include_router(auth_router)
 app.include_router(users_router)
@@ -112,6 +114,8 @@ app.include_router(margins_router)
 app.include_router(library_router)
 app.include_router(muse_router)
 app.include_router(btl_router)
+app.include_router(search_router)
 app.include_router(moderation_router)
 app.include_router(privacy_router)
 app.include_router(media_router)
+app.include_router(notifications_router)

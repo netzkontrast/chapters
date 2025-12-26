@@ -77,8 +77,34 @@ class APIClient {
         errorData = { detail: response.statusText }
       }
 
+      // Handle 401 Unauthorized - token expired or invalid
+      if (response.status === 401) {
+        // Clear invalid token
+        Cookies.remove('auth_token')
+        
+        // Only redirect to login if we're on a protected route
+        // Public routes like /library, /chapters/:id should not redirect
+        if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+          const publicRoutes = ['/', '/library', '/about', '/muse', '/manifesto', '/privacy', '/terms', '/contact']
+          const isPublicRoute = publicRoutes.some(route => window.location.pathname === route) ||
+                               window.location.pathname.startsWith('/chapters/') ||
+                               window.location.pathname.startsWith('/books/') ||
+                               window.location.pathname.startsWith('/themes/')
+          
+          // Don't redirect on public routes - let the component handle it
+          if (!isPublicRoute) {
+            window.location.href = '/auth/login?expired=true'
+          }
+        }
+      }
+
+      // Create a proper error message
+      const errorMessage = typeof errorData.detail === 'string' 
+        ? errorData.detail 
+        : JSON.stringify(errorData.detail || errorData)
+
       throw new APIError(
-        errorData.detail || 'An error occurred',
+        errorMessage,
         response.status,
         errorData
       )
@@ -131,8 +157,8 @@ export const apiClient = new APIClient(API_URL)
 export const auth = {
   setToken(token: string) {
     Cookies.set('auth_token', token, {
-      expires: 7, // 7 days
-      sameSite: 'strict',
+      expires: 30, // 30 days instead of 7
+      sameSite: 'lax', // Changed from 'strict' to 'lax' for better compatibility
       secure: process.env.NODE_ENV === 'production',
     })
   },

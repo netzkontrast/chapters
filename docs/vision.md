@@ -7,7 +7,7 @@
 This is not another feed.  
 It's a living anthology.
 
-A calm, intentional space for people with inner lives, creative curiosity, and impressive taste.
+A calm, intentional space for people with inner lives, creative curiosity, and discernment.
 
 ---
 
@@ -57,14 +57,21 @@ On mobile, users:
 
 ---
 
-## 📱 Mobile Reading Experience (Key Differentiator)
+## 📱 Reading Experience (Mobile & Web)
 
+**Mobile:**
 - Real page-turn gesture
 - Subtle paper texture and shadows
 - Progress feels physical, not infinite
 - Each chapter has a natural beginning and end
 
-This slows behavior automatically.
+**Web:**
+- Comfortable reading width and typography
+- Smooth scroll with reading progress indicator
+- Keyboard shortcuts for navigation
+- Distraction-free full-screen mode
+
+Both experiences slow behavior automatically and prioritize depth over speed.
 
 ---
 

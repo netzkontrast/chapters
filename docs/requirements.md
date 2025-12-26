@@ -271,16 +271,20 @@ The platform serves poets, writers, visual artists, musicians, filmmakers, and p
 
 ### Requirement 20: Web Application Experience
 
-**User Story:** As a web user, I want to access Chapters through a browser for reading and limited interaction, so that I can engage without installing an app.
+**User Story:** As a web user, I want to access Chapters through a browser with full creative capabilities, so that I can write, connect, and engage without installing an app.
 
 #### Acceptance Criteria
 
 1. THE Web_App SHALL display a marketing site with product information and manifesto
 2. THE Web_App SHALL support user authentication and account creation
-3. THE Web_App SHALL provide a read-only or limited reading experience for chapters
-4. THE Web_App SHALL use Next.js, Tailwind CSS, and shadcn/ui for implementation
-5. THE Web_App SHALL use Framer Motion for subtle transitions and animations
-6. THE Web_App SHALL NOT require feature parity with the mobile application in MVP
+3. THE Web_App SHALL support creating and editing chapters with the full block-based editor
+4. THE Web_App SHALL support creating and editing drafts in the Study workspace
+5. THE Web_App SHALL support creating and editing notes in the Note Nook
+6. THE Web_App SHALL support sending and receiving Between the Lines messages
+7. THE Web_App SHALL support all reading and engagement features (hearts, bookmarks, margins)
+8. THE Web_App SHALL use Next.js, Tailwind CSS, and shadcn/ui for implementation
+9. THE Web_App SHALL use Framer Motion for subtle transitions and animations
+10. THE Web_App SHALL maintain the same calm, intentional design philosophy as the mobile app
 
 ### Requirement 21: API Architecture and Performance
 

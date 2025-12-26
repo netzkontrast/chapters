@@ -3,21 +3,26 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { BetweenTheLinesModal } from "./BetweenTheLinesModal"
+import { useUser } from "@/hooks/useUser"
 
 interface BetweenTheLinesButtonProps {
   bookId: string
+  bookUserId: string | number
   bookTitle: string
-  isEligible: boolean
 }
 
 export function BetweenTheLinesButton({
   bookId,
+  bookUserId,
   bookTitle,
-  isEligible,
 }: BetweenTheLinesButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const { data: currentUser } = useUser()
 
-  if (!isEligible) return null
+  // Don't show BTL button for own book
+  if (!currentUser || currentUser.user_id === parseInt(bookUserId.toString())) {
+    return null
+  }
 
   return (
     <>
@@ -32,7 +37,7 @@ export function BetweenTheLinesButton({
       <BetweenTheLinesModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        bookId={bookId}
+        recipientId={parseInt(bookUserId.toString())}
         bookTitle={bookTitle}
       />
     </>

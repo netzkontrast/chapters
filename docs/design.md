@@ -978,7 +978,12 @@ app/
     ├── library/page.tsx      # Bookshelf
     ├── books/[id]/page.tsx   # Book view
     ├── chapters/[id]/page.tsx # Chapter reader
-    └── study/page.tsx        # Drafts (limited)
+    ├── study/page.tsx        # Drafts workspace
+    ├── study/drafts/[id]/page.tsx # Draft editor
+    ├── study/notes/page.tsx  # Note Nook
+    ├── compose/page.tsx      # Chapter composer
+    ├── conversations/page.tsx # Between the Lines
+    └── conversations/[id]/page.tsx # BTL thread
 ```
 
 **Styling Approach:**
@@ -991,12 +996,24 @@ app/
   - Hover effects on book spines
   - Subtle micro-interactions
 
-**Web Limitations (MVP):**
+**Web Capabilities (Full Feature Parity):**
 
-- No chapter creation (mobile-first for creation)
-- No Between the Lines (mobile-only for privacy)
-- Read-only or limited interaction
-- Focus on marketing and discovery
+- ✅ Chapter creation and editing with block-based editor
+- ✅ Draft management in Study workspace
+- ✅ Note creation and editing in Note Nook
+- ✅ Between the Lines messaging and connections
+- ✅ All reading features (hearts, bookmarks, margins)
+- ✅ Search and theme exploration
+- ✅ Muse AI companion integration
+- ✅ Keyboard shortcuts for power users
+- ✅ Same calm, intentional design philosophy
+
+**Web-Specific Enhancements:**
+
+- Keyboard shortcuts (⌘K for search, G+L/S/T/C for navigation)
+- Larger screen real estate for comfortable writing
+- Side-by-side draft and Muse panels
+- Enhanced typography for extended reading sessions
 
 ## Background Jobs
 

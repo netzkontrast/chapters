@@ -6,7 +6,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useBook, useBookChapters, useFollowBook } from "@/hooks/useLibrary"
 import { BetweenTheLinesButton } from "@/components/btl/BetweenTheLinesButton"
-import { useBTLEligibility } from "@/hooks/useBTL"
+import { AddToShelfButton } from "@/components/AddToShelfButton"
 
 export default function BookPage() {
   const params = useParams()
@@ -17,9 +17,6 @@ export default function BookPage() {
   const { data: book, isLoading: bookLoading } = useBook(bookId)
   const { data: chaptersData, isLoading: chaptersLoading } = useBookChapters(bookId, page)
   const followMutation = useFollowBook()
-  
-  // Check BTL eligibility
-  const { data: eligibility } = useBTLEligibility(bookId)
 
   const handleFollow = () => {
     if (!book) return
@@ -86,11 +83,14 @@ export default function BookPage() {
                   {book.is_following ? "Following" : "Follow"}
                 </Button>
                 
+                {/* Add to Shelf Button */}
+                <AddToShelfButton bookId={bookId} variant="outline" />
+                
                 {/* Between the Lines Button */}
                 <BetweenTheLinesButton
                   bookId={bookId}
+                  bookUserId={book.user_id}
                   bookTitle={book.username}
-                  isEligible={eligibility?.isEligible ?? false}
                 />
               </div>
             </div>

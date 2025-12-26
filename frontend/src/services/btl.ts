@@ -1,133 +1,124 @@
 /**
  * Between the Lines Service
  * 
- * Handles connection invites and conversations
+ * Handles connection invites and private conversations
  */
 
 import { apiClient } from '@/lib/api-client'
 
-export interface BTLEligibility {
-  isEligible: boolean
-  reason?: string
-}
-
 export interface BTLInvite {
-  id: string
-  fromUserId: string
-  fromUsername: string
-  fromBookTitle: string
-  toUserId: string
-  message: string
-  chapterExcerpt?: string
+  id: number
+  sender_id: number
+  recipient_id: number
+  note?: string
+  quoted_line?: string
   status: 'pending' | 'accepted' | 'declined'
-  createdAt: string
+  created_at: string
 }
 
-export interface BTLConversation {
-  id: string
-  user1Id: string
-  user2Id: string
-  user1BookTitle: string
-  user2BookTitle: string
-  lastMessageAt: string
-  status: 'active' | 'closed'
+export interface BTLThread {
+  id: number
+  participant1_id: number
+  participant2_id: number
+  status: 'open' | 'closed'
+  created_at: string
+  closed_at?: string
 }
 
 export interface BTLMessage {
-  id: string
-  conversationId: string
-  senderId: string
-  senderUsername: string
+  id: number
+  thread_id: number
+  sender_id: number
   content: string
-  createdAt: string
+  created_at: string
+}
+
+export interface BTLPin {
+  id: number
+  thread_id: number
+  user_id: number
+  chapter_id: number
+  excerpt: string
+  created_at: string
 }
 
 export const btlService = {
   /**
-   * Check if BTL is available with a user
-   */
-  async checkEligibility(bookId: string): Promise<BTLEligibility> {
-    return apiClient.get<BTLEligibility>(`/btl/eligibility/${bookId}`)
-  },
-
-  /**
    * Send BTL invite
    */
   async sendInvite(data: {
-    toBookId: string
-    message: string
-    chapterExcerpt?: string
+    recipient_id: number
+    note?: string
+    quoted_line?: string
   }): Promise<BTLInvite> {
-    return apiClient.post<BTLInvite>('/btl/invite', data)
+    return apiClient.post<BTLInvite>('/between-the-lines/invites', data)
   },
 
   /**
-   * Get pending invites
+   * Get pending invites (received by current user)
    */
   async getPendingInvites(): Promise<BTLInvite[]> {
-    return apiClient.get<BTLInvite[]>('/btl/invites')
+    return apiClient.get<BTLInvite[]>('/between-the-lines/invites')
   },
 
   /**
    * Accept invite
    */
-  async acceptInvite(inviteId: string): Promise<BTLConversation> {
-    return apiClient.post<BTLConversation>(`/btl/accept/${inviteId}`)
+  async acceptInvite(inviteId: number): Promise<BTLThread> {
+    return apiClient.post<BTLThread>(`/between-the-lines/invites/${inviteId}/accept`)
   },
 
   /**
    * Decline invite
    */
-  async declineInvite(inviteId: string): Promise<void> {
-    await apiClient.post(`/btl/decline/${inviteId}`)
+  async declineInvite(inviteId: number): Promise<void> {
+    await apiClient.post(`/between-the-lines/invites/${inviteId}/decline`)
   },
 
   /**
-   * Get all conversations
+   * Get all threads
    */
-  async getConversations(): Promise<BTLConversation[]> {
-    return apiClient.get<BTLConversation[]>('/btl/conversations')
+  async getThreads(): Promise<BTLThread[]> {
+    return apiClient.get<BTLThread[]>('/between-the-lines/threads')
   },
 
   /**
-   * Get conversation messages
+   * Get thread messages
    */
-  async getMessages(conversationId: string): Promise<BTLMessage[]> {
-    return apiClient.get<BTLMessage[]>(`/btl/conversation/${conversationId}`)
+  async getMessages(threadId: number): Promise<BTLMessage[]> {
+    return apiClient.get<BTLMessage[]>(`/between-the-lines/threads/${threadId}/messages`)
   },
 
   /**
    * Send message
    */
-  async sendMessage(conversationId: string, content: string): Promise<BTLMessage> {
-    return apiClient.post<BTLMessage>('/btl/message', {
-      conversationId,
+  async sendMessage(threadId: number, content: string): Promise<BTLMessage> {
+    return apiClient.post<BTLMessage>(`/between-the-lines/threads/${threadId}/messages`, {
       content,
     })
   },
 
   /**
-   * Close conversation
+   * Close thread
    */
-  async closeConversation(conversationId: string): Promise<void> {
-    await apiClient.post(`/btl/close/${conversationId}`)
+  async closeThread(threadId: number): Promise<void> {
+    await apiClient.post(`/between-the-lines/threads/${threadId}/close`)
   },
 
   /**
-   * Block user
+   * Create pin
    */
-  async blockUser(userId: string): Promise<void> {
-    await apiClient.post(`/moderation/blocks/${userId}`)
+  async createPin(threadId: number, data: {
+    chapter_id: number
+    excerpt: string
+  }): Promise<BTLPin> {
+    return apiClient.post<BTLPin>(`/between-the-lines/threads/${threadId}/pins`, data)
   },
 
   /**
-   * Report conversation
+   * Get thread pins
    */
-  async reportConversation(conversationId: string, reason: string): Promise<void> {
-    await apiClient.post('/moderation/reports', {
-      type: 'btl_conversation',
-      targetId: conversationId,
-      reason,
-    })
+  async getPins(threadId: number): Promise<BTLPin[]> {
+    return apiClient.get<BTLPin[]>(`/between-the-lines/threads/${threadId}/pins`)
   },
 }

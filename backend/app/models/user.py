@@ -1,6 +1,6 @@
 """User model"""
 from datetime import datetime, timezone
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -18,6 +18,13 @@ class User(Base):
     # Open Pages system
     open_pages = Column(Integer, default=3, nullable=False)
     last_open_page_grant = Column(DateTime(timezone=True), nullable=True)
+    
+    # Muse system
+    muse_level = Column(String, default="spark", nullable=False)  # spark, shaper, echo, resonance
+    muse_xp = Column(Integer, default=0, nullable=False)
+    
+    # Quiet Mode - respects user's need for uninterrupted space
+    quiet_mode = Column(Boolean, default=False, nullable=False)
     
     # Timestamps
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
@@ -43,6 +50,9 @@ class User(Base):
     
     # Taste profile
     taste_profile = relationship("UserTasteProfile", back_populates="user", uselist=False, cascade="all, delete-orphan")
+    
+    # Notifications
+    notifications = relationship("Notification", foreign_keys="Notification.user_id", back_populates="user", cascade="all, delete-orphan")
     
     def __repr__(self):
         return f"<User(id={self.id}, username='{self.username}')>"

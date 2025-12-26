@@ -18,10 +18,23 @@ from app.muse.service import (
 from app.muse.embeddings import (
     initialize_taste_profile, get_quiet_picks, calculate_resonance
 )
+from app.services.muse_progression import get_muse_info
 from app.chapters.schemas import ChapterResponse
 from app.config import settings
 
 router = APIRouter(prefix="/muse", tags=["Muse AI"])
+
+
+# ============================================================================
+# MUSE LEVEL INFO
+# ============================================================================
+
+@router.get("/level")
+async def get_muse_level(
+    current_user: User = Depends(get_current_user)
+):
+    """Get current user's Muse level and XP progress"""
+    return get_muse_info(current_user)
 
 
 # ============================================================================

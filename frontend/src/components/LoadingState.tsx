@@ -12,7 +12,7 @@ export function LoadingState({ message = "Loading..." }: LoadingStateProps) {
     <div className="flex flex-col items-center justify-center py-20">
       {/* Pulsing logo */}
       <div className="mb-6">
-        <Logo size={80} animated />
+        <Logo size={80} animate />
       </div>
 
       {/* Loading text */}

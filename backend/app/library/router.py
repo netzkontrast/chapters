@@ -221,3 +221,85 @@ async def get_book_chapters(
     chapters = query.offset(offset).limit(per_page).all()
     
     return chapters
+
+
+
+# ============================================================================
+# SPINES (PEOPLE DISCOVERY)
+# ============================================================================
+
+@router.get("/spines-discovery")
+async def get_spines_discovery(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get Spines - Books you've interacted with (read from, added to Shelf, or seen in Quiet Picks).
+    
+    Work-first discovery - no metrics, no trending.
+    """
+    from app.models.shelf import Shelf
+    from app.models import Heart, Bookmark
+    
+    discovered_user_ids = set()
+    
+    # 1. Books on user's Shelf
+    shelf_user_ids = db.query(Shelf.book_owner_id).filter(
+        Shelf.user_id == current_user.id
+    ).all()
+    discovered_user_ids.update([uid[0] for uid in shelf_user_ids])
+    
+    # 2. Books from hearted chapters
+    hearted_author_ids = db.query(Chapter.author_id).join(
+        Heart, Heart.chapter_id == Chapter.id
+    ).filter(
+        Heart.user_id == current_user.id
+    ).distinct().all()
+    discovered_user_ids.update([uid[0] for uid in hearted_author_ids])
+    
+    # 3. Books from bookmarked chapters
+    bookmarked_author_ids = db.query(Chapter.author_id).join(
+        Bookmark, Bookmark.chapter_id == Chapter.id
+    ).filter(
+        Bookmark.user_id == current_user.id
+    ).distinct().all()
+    discovered_user_ids.update([uid[0] for uid in bookmarked_author_ids])
+    
+    if not discovered_user_ids:
+        return []
+    
+    # Get all Books and Users in one query
+    books_with_users = db.query(Book, User).join(
+        User, Book.user_id == User.id
+    ).filter(
+        Book.user_id.in_(discovered_user_ids)
+    ).all()
+    
+    # Get last chapter dates for all these users in one query
+    last_chapters = db.query(
+        Chapter.author_id,
+        func.max(Chapter.published_at).label('last_published')
+    ).filter(
+        Chapter.author_id.in_(discovered_user_ids)
+    ).group_by(Chapter.author_id).all()
+    
+    last_chapter_map = {author_id: last_pub for author_id, last_pub in last_chapters}
+    
+    # Build response
+    spines = []
+    for book, user in books_with_users:
+        last_chapter_at = last_chapter_map.get(user.id)
+        spines.append({
+            "book_id": book.id,
+            "user_id": user.id,
+            "username": user.username,
+            "display_name": book.display_name,
+            "bio": book.bio,
+            "cover_image_url": book.cover_image_url,
+            "last_chapter_at": last_chapter_at.isoformat() if last_chapter_at else None
+        })
+    
+    # Sort by most recent chapter
+    spines.sort(key=lambda x: x["last_chapter_at"] or "", reverse=True)
+    
+    return spines

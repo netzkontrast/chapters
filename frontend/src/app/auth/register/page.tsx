@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Logo } from "@/components/Logo"
 import { authService } from "@/services/auth"
 import { Footer } from "@/components/Footer"
+import { Header } from "@/components/Header"
 import { MuseOnboarding, OnboardingPreferences } from "@/components/onboarding/MuseOnboarding"
 
 export default function RegisterPage() {
@@ -99,8 +100,14 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {/* Header */}
+      <Header />
+      
+      {/* Spacer for fixed header */}
+      <div className="h-20" />
+      
       {/* Main Content */}
-      <main className="flex-1 flex items-center justify-center px-4 pt-24 pb-12">
+      <main className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           {/* Header */}
           <div className="text-center mb-8 animate-fade-in">

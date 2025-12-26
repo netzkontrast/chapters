@@ -18,16 +18,6 @@ Everything you need to understand, build, and deploy Chapters.
 - **[Setup Guide](setup.md)** - Local development setup
 
 ### Features
-- **[Spines](spines/)** - People discovery through work
-  - [README](spines/README.md) - Quick overview
-  - [Requirements](spines/requirements.md) - Feature specifications
-  - [Design](spines/design.md) - Architecture and data models
-  - [Tasks](spines/tasks.md) - Implementation plan
-- **[Add to Shelf](add-to-shelf/)** - Curated Book collection
-  - [README](add-to-shelf/README.md) - Quick overview
-  - [Requirements](add-to-shelf/requirements.md) - 8 requirements, 35 acceptance criteria
-  - [Design](add-to-shelf/design.md) - Architecture, data models, 15 properties
-  - [Tasks](add-to-shelf/tasks.md) - 15 main tasks, 44 sub-tasks
 - **[Gamification](gamification.md)** - Muse levels and quiet badges
 - **[Muse](muse.md)** - AI companion philosophy and abilities
 
@@ -42,13 +32,15 @@ Everything you need to understand, build, and deploy Chapters.
 **New to Chapters?**
 1. Read [Vision](vision.md) - understand the philosophy (includes glossary and copy guidelines)
 2. Review [Visual Design](visuals.md) - see the design system
-3. Follow [Setup Guide](setup.md) - get running locally
+3. Check [Web Version](web-version.md) - explore web platform capabilities
+4. Follow [Setup Guide](setup.md) - get running locally
 
 **Building features?**
 - Reference [Requirements](requirements.md) for specs
 - Follow [Design](design.md) for architecture
 - Check [Vision](vision.md) for terminology and copy guidelines
 - Use [Visual Design](visuals.md) for styling
+- Review [Web Version](web-version.md) for web-specific features
 - Apply [Testing](testing.md) guidelines
 
 **Deploying?**
@@ -99,10 +91,11 @@ See [Vision](vision.md) for complete terminology guide.
 ## 📊 Project Stats
 
 - **Requirements**: 200+ specifications
-- **Tasks**: 41 (38 complete)
+- **Tasks**: 41 (41 complete)
 - **Tests**: 70+ passing
 - **API Endpoints**: 50+
-- **Status**: 95% complete, ready for production
+- **Features**: 12 complete (including web full feature parity)
+- **Status**: Production ready, all core features complete
 
 ---
 

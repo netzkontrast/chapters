@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { AnimatedSection } from "@/components/AnimatedSection"
+import { Header } from "@/components/Header"
 import { Footer } from "@/components/Footer"
 
 export default function AboutPage() {
@@ -8,6 +9,7 @@ export default function AboutPage() {
   
   return (
     <div className="min-h-screen bg-background">
+      <Header />
       {/* Content */}
       <article className="container mx-auto px-4 pt-32 pb-16 max-w-3xl">
         <AnimatedSection>

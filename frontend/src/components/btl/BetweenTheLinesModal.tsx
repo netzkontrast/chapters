@@ -9,33 +9,49 @@ import { useSendInvite } from "@/hooks/useBTL"
 interface BetweenTheLinesModalProps {
   isOpen: boolean
   onClose: () => void
-  bookId: string
+  recipientId: number
   bookTitle: string
 }
 
 export function BetweenTheLinesModal({
   isOpen,
   onClose,
-  bookId,
+  recipientId,
   bookTitle,
 }: BetweenTheLinesModalProps) {
-  const [message, setMessage] = useState("")
+  const [note, setNote] = useState("")
+  const [quotedLine, setQuotedLine] = useState("")
+  const [error, setError] = useState("")
   
   const sendInvite = useSendInvite()
 
   const handleSend = async () => {
-    if (!message.trim()) return
+    if (!note.trim() && !quotedLine.trim()) {
+      setError("Please include either a note or a quoted line")
+      return
+    }
+
+    setError("")
 
     try {
       await sendInvite.mutateAsync({
-        toBookId: bookId,
-        message: message.trim(),
+        recipient_id: recipientId,
+        note: note.trim() || undefined,
+        quoted_line: quotedLine.trim() || undefined,
       })
       onClose()
-      setMessage("")
-    } catch (error) {
-      console.error("Failed to send invite:", error)
+      setNote("")
+      setQuotedLine("")
+    } catch (err: any) {
+      setError(err?.response?.data?.detail || "Failed to send invite. Please try again.")
     }
+  }
+
+  const handleClose = () => {
+    setNote("")
+    setQuotedLine("")
+    setError("")
+    onClose()
   }
 
   return (
@@ -47,7 +63,7 @@ export function BetweenTheLinesModal({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={handleClose}
             className="fixed inset-0 bg-black/50 z-40"
           />
 
@@ -71,7 +87,7 @@ export function BetweenTheLinesModal({
                     </p>
                   </div>
                   <button
-                    onClick={onClose}
+                    onClick={handleClose}
                     className="text-muted-foreground hover:text-foreground transition-colors"
                     aria-label="Close"
                   >
@@ -105,30 +121,54 @@ export function BetweenTheLinesModal({
                   </p>
                 </div>
 
-                {/* Message Input */}
+                {/* Requirements */}
+                <div className="mb-6 p-4 bg-muted/30 border border-border rounded-lg">
+                  <p className="text-xs font-medium text-foreground mb-2">Requirements:</p>
+                  <ul className="text-xs text-muted-foreground space-y-1">
+                    <li>• You must follow each other</li>
+                    <li>• Both must have 3+ published chapters</li>
+                    <li>• Limit: 3 invites per day</li>
+                  </ul>
+                </div>
+
+                {/* Error Message */}
+                {error && (
+                  <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+                    <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                  </div>
+                )}
+
+                {/* Note Input */}
                 <div className="mb-6">
-                  <Label htmlFor="btl-message" className="mb-2">
+                  <Label htmlFor="btl-note" className="mb-2">
                     What moved you?
                   </Label>
                   <textarea
-                    id="btl-message"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value.slice(0, 500))}
+                    id="btl-note"
+                    value={note}
+                    onChange={(e) => setNote(e.target.value.slice(0, 500))}
                     placeholder="Share what resonated with you..."
                     className="w-full min-h-[120px] px-3 py-2 bg-background border border-border rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    {message.length}/500 characters
+                    {note.length}/500 characters
                   </p>
                 </div>
 
-                {/* Optional: Chapter Excerpt */}
+                {/* Quoted Line Input */}
                 <div className="mb-6">
-                  <Label className="mb-2">
-                    Include a chapter excerpt? (Optional)
+                  <Label htmlFor="btl-quote" className="mb-2">
+                    Include a line that spoke to you? (Optional)
                   </Label>
-                  <p className="text-xs text-muted-foreground mb-3">
-                    Coming soon - you'll be able to quote specific lines
+                  <textarea
+                    id="btl-quote"
+                    value={quotedLine}
+                    onChange={(e) => setQuotedLine(e.target.value.slice(0, 300))}
+                    placeholder="Quote a specific line from their writing..."
+                    className="w-full min-h-[80px] px-3 py-2 bg-background border border-border rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {quotedLine.length}/300 characters
                   </p>
                 </div>
 
@@ -136,13 +176,13 @@ export function BetweenTheLinesModal({
                 <div className="flex gap-3">
                   <Button
                     onClick={handleSend}
-                    disabled={!message.trim() || sendInvite.isPending}
+                    disabled={(!note.trim() && !quotedLine.trim()) || sendInvite.isPending}
                     className="flex-1"
                   >
                     {sendInvite.isPending ? "Sending..." : "Send Invitation"}
                   </Button>
                   <Button
-                    onClick={onClose}
+                    onClick={handleClose}
                     variant="outline"
                   >
                     Cancel

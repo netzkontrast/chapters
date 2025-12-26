@@ -13,6 +13,9 @@ export interface BookProfile {
   bio: string | null
   cover_image_url: string | null
   is_private: boolean
+  open_pages: number
+  muse_level: string
+  muse_xp: number
 }
 
 export interface PasswordUpdateData {

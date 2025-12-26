@@ -7,10 +7,13 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ThemeToggle } from "@/components/ThemeToggle"
+import { ConfirmModal } from "@/components/ui/ConfirmModal"
 import { PageTransition, TabTransition } from "@/components/PageTransition"
 import { MuseOnboarding, OnboardingPreferences } from "@/components/onboarding/MuseOnboarding"
+import { AuthenticatedHeader } from "@/components/AuthenticatedHeader"
+import { Footer } from "@/components/Footer"
 import { authService } from "@/services/auth"
+import { useToast } from "@/components/ui/toast"
 import {
   useBookProfile,
   useUpdatePassword,
@@ -18,13 +21,18 @@ import {
   useUpdateAvatar,
 } from "@/hooks/useUser"
 import { AnimatePresence } from "framer-motion"
+import { COPY } from "@/constants/copy"
+import { ResponsiveTabs } from "@/components/ui/ResponsiveTabs"
 
 const AVATAR_OPTIONS = Array.from({ length: 20 }, (_, i) => `/avatars/avatar${i + 1}.png`)
 
 export default function SettingsPage() {
   const router = useRouter()
-  const [activeTab, setActiveTab] = useState<"bindings" | "book" | "muse">("bindings")
+  const { showToast } = useToast()
+  const [activeTab, setActiveTab] = useState<"bindings" | "book" | "btl" | "muse">("bindings")
   const [showMuseOnboarding, setShowMuseOnboarding] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   
   // Fetch book profile
   const { data: bookProfile, isLoading: isLoadingProfile } = useBookProfile()
@@ -151,6 +159,28 @@ export default function SettingsPage() {
     }
   }
 
+  const handleDeleteBook = async () => {
+    setIsDeleting(true)
+    try {
+      // TODO: Implement actual delete API call
+      // await authService.deleteAccount()
+      showToast({
+        type: "info",
+        title: "Feature coming soon",
+        message: "Book deletion will be available in the next update",
+      })
+      setShowDeleteModal(false)
+      setIsDeleting(false)
+    } catch (error: any) {
+      showToast({
+        type: "error",
+        title: "Failed to delete Book",
+        message: error?.response?.data?.detail || "Please try again",
+      })
+      setIsDeleting(false)
+    }
+  }
+
   const handleMuseOnboardingComplete = (preferences: OnboardingPreferences) => {
     setShowMuseOnboarding(false)
     // Preferences are already saved by the onboarding component
@@ -174,53 +204,21 @@ export default function SettingsPage() {
     <PageTransition>
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-card sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-serif font-bold text-foreground">Preferences</h1>
-          <div className="flex items-center gap-4">
-            <ThemeToggle />
-            <Link href="/library">
-              <Button variant="ghost">← Library</Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <AuthenticatedHeader title={COPY.NAV.PREFERENCES} />
 
       {/* Tabs */}
       <div className="border-b border-border bg-card">
         <div className="container mx-auto px-4">
-          <div className="flex gap-8">
-            <button
-              onClick={() => setActiveTab("bindings")}
-              className={`py-4 border-b-2 transition-colors ${
-                activeTab === "bindings"
-                  ? "border-primary text-foreground font-medium"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Bindings
-            </button>
-            <button
-              onClick={() => setActiveTab("book")}
-              className={`py-4 border-b-2 transition-colors ${
-                activeTab === "book"
-                  ? "border-primary text-foreground font-medium"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Your Book
-            </button>
-            <button
-              onClick={() => setActiveTab("muse")}
-              className={`py-4 border-b-2 transition-colors ${
-                activeTab === "muse"
-                  ? "border-primary text-foreground font-medium"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Muse
-            </button>
-          </div>
+          <ResponsiveTabs
+            tabs={[
+              { id: 'bindings', label: 'Bindings', priority: 4 },
+              { id: 'book', label: 'Your Book', shortLabel: 'Book', priority: 3 },
+              { id: 'btl', label: 'Conversations', shortLabel: 'BTL', priority: 2 },
+              { id: 'muse', label: 'Muse', priority: 1 },
+            ]}
+            activeTab={activeTab}
+            onChange={(tab) => setActiveTab(tab as "bindings" | "book" | "btl" | "muse")}
+          />
         </div>
       </div>
 
@@ -236,7 +234,7 @@ export default function SettingsPage() {
                 Bindings
               </h2>
               <p className="text-sm text-muted-foreground mb-8">
-                These are the bindings that hold your Book together. They're practical, quiet, and rarely touched — but important.
+                These are the bindings that hold your Book together. They're practical, quiet, and important.
               </p>
 
               <h3 className="text-xl font-serif font-semibold text-foreground mb-3">
@@ -432,6 +430,22 @@ export default function SettingsPage() {
                   Logout
                 </Button>
               </div>
+
+              <div className="mt-12 pt-8 border-t border-border">
+                <h3 className="text-lg font-semibold text-red-600 dark:text-red-400 mb-2">
+                  {COPY.PREFERENCES.DELETE_BOOK_TITLE}
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {COPY.PREFERENCES.DELETE_BOOK_MESSAGE}
+                </p>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowDeleteModal(true)}
+                  className="border-red-600 text-red-600 hover:bg-red-50 dark:hover:bg-red-950"
+                >
+                  {COPY.BUTTONS.DELETE_BOOK}
+                </Button>
+              </div>
             </div>
           </div>
           </TabTransition>
@@ -564,6 +578,39 @@ export default function SettingsPage() {
           </TabTransition>
         )}
 
+        {/* BTL Tab */}
+        {activeTab === "btl" && (
+          <TabTransition key="btl">
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-card border border-border rounded-lg p-8">
+              <h2 className="text-2xl font-serif font-semibold text-foreground mb-3">
+                {COPY.PREFERENCES.BTL_SETTINGS_TITLE}
+              </h2>
+              <p className="text-sm text-muted-foreground mb-8">
+                {COPY.PREFERENCES.BTL_SETTINGS_DESCRIPTION}
+              </p>
+
+              <div className="space-y-6">
+                <div className="pt-6 border-t border-border">
+                  <h3 className="text-lg font-serif font-semibold text-foreground mb-3">
+                    About Conversations
+                  </h3>
+                  <div className="text-sm text-muted-foreground space-y-2">
+                    <p>
+                      Between the Lines is where thoughtful conversations happen. 
+                      Invite someone from their Book page to start a conversation.
+                    </p>
+                    <p className="pt-2">
+                      Conversations are private, intentional, and never rushed.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </TabTransition>
+        )}
+
         {/* Muse Tab */}
         {activeTab === "muse" && (
           <TabTransition key="muse">
@@ -618,6 +665,20 @@ export default function SettingsPage() {
         )}
         </AnimatePresence>
       </main>
+
+      <Footer />
+
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDeleteBook}
+        title={COPY.PREFERENCES.DELETE_BOOK_TITLE}
+        message={COPY.PREFERENCES.DELETE_BOOK_MESSAGE}
+        confirmText={COPY.PREFERENCES.DELETE_BOOK_CONFIRM}
+        cancelText={COPY.PREFERENCES.DELETE_BOOK_CANCEL}
+        variant="danger"
+        isLoading={isDeleting}
+      />
     </div>
     </PageTransition>
   )

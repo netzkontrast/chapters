@@ -91,6 +91,10 @@ async def create_invite(
     db.commit()
     db.refresh(invite)
     
+    # Notify recipient
+    from app.services.notification_service import notify_btl_invite
+    notify_btl_invite(db, invite.id, current_user.id, recipient.id)
+    
     return invite
 
 
@@ -286,6 +290,11 @@ async def create_message(
     db.add(message)
     db.commit()
     db.refresh(message)
+    
+    # Notify the other participant
+    recipient_id = thread.participant2_id if current_user.id == thread.participant1_id else thread.participant1_id
+    from app.services.notification_service import notify_btl_reply
+    notify_btl_reply(db, thread_id, current_user.id, recipient_id)
     
     return message
 

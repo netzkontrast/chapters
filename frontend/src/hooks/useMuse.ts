@@ -44,3 +44,11 @@ export function useResonance(userId: number) {
     enabled: !!userId,
   })
 }
+
+export function useMuseLevel() {
+  return useQuery({
+    queryKey: ['muse-level'],
+    queryFn: () => museService.getMuseLevel(),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  })
+}

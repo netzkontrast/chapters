@@ -5,39 +5,89 @@ import { motion } from "framer-motion"
 
 interface LogoProps {
   size?: number
-  animated?: boolean
+  animate?: boolean
   className?: string
 }
 
-export function Logo({ size = 40, animated = false, className = "" }: LogoProps) {
-  const logoElement = (
-    <Image
-      src="/logo.png"
-      alt="Chapters"
-      width={size}
-      height={size}
-      className={`${className}`}
-      priority
-    />
-  )
+export function Logo({ size = 48, animate = true, className = "" }: LogoProps) {
+  const shakeVariants = {
+    initial: { 
+      scale: 0.8,
+      opacity: 0,
+      rotate: 0
+    },
+    animate: { 
+      scale: 1,
+      opacity: 1,
+      rotate: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    },
+    hover: {
+      rotate: [0, -5, 5, -5, 5, 0],
+      transition: {
+        duration: 0.5,
+        ease: "easeInOut"
+      }
+    }
+  }
 
-  if (animated) {
+  const glowVariants = {
+    animate: {
+      opacity: [0.3, 0.6, 0.3],
+      scale: [1, 1.1, 1],
+      transition: {
+        duration: 3,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  }
+
+  if (!animate) {
     return (
-      <motion.div
-        animate={{
-          opacity: [0.4, 1, 0.4],
-          scale: [0.95, 1, 0.95],
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      >
-        {logoElement}
-      </motion.div>
+      <div className={`relative ${className}`} style={{ width: size, height: size }}>
+        <Image
+          src="/logo.png"
+          alt="Chapters"
+          width={size}
+          height={size}
+          className="object-contain"
+          priority
+        />
+      </div>
     )
   }
 
-  return logoElement
+  return (
+    <motion.div
+      className={`relative ${className}`}
+      style={{ width: size, height: size }}
+      variants={shakeVariants}
+      initial="initial"
+      animate="animate"
+      whileHover="hover"
+    >
+      {/* Glow effect */}
+      <motion.div
+        className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 via-accent/20 to-primary/20 blur-xl"
+        variants={glowVariants}
+        animate="animate"
+      />
+      
+      {/* Logo image */}
+      <motion.div className="relative z-10">
+        <Image
+          src="/logo.png"
+          alt="Chapters"
+          width={size}
+          height={size}
+          className="object-contain drop-shadow-lg"
+          priority
+        />
+      </motion.div>
+    </motion.div>
+  )
 }

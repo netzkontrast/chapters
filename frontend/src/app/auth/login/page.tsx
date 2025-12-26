@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { Suspense, useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,19 +9,30 @@ import { Label } from "@/components/ui/label"
 import { Logo } from "@/components/Logo"
 import { authService } from "@/services/auth"
 import { Footer } from "@/components/Footer"
+import { Header } from "@/components/Header"
+import { LoadingState } from "@/components/LoadingState"
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const currentYear = new Date().getFullYear()
+  const [sessionExpired, setSessionExpired] = useState(false)
+
+  useEffect(() => {
+    // Check if user was redirected due to expired session
+    if (searchParams.get('expired') === 'true') {
+      setSessionExpired(true)
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
+    setSessionExpired(false)
     setIsLoading(true)
 
     try {
@@ -36,8 +47,14 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {/* Header */}
+      <Header />
+      
+      {/* Spacer for fixed header */}
+      <div className="h-20" />
+      
       {/* Main Content */}
-      <main className="flex-1 flex items-center justify-center px-4 pt-24 pb-12">
+      <main className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           {/* Header */}
           <div className="text-center mb-8 animate-fade-in">
@@ -54,6 +71,13 @@ export default function LoginPage() {
 
           {/* Form */}
           <div className="bg-card rounded-lg border border-border p-8 shadow-sm hover:shadow-md transition-shadow duration-300 animate-fade-in-delay-1">
+            {/* Session Expired Message */}
+            {sessionExpired && (
+              <div className="mb-6 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 rounded-md p-3 text-sm">
+                Your session has expired. Please log in again to continue.
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email */}
               <div className="space-y-2">
@@ -159,5 +183,13 @@ export default function LoginPage() {
 
       <Footer />
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoadingState message="Loading..." />}>
+      <LoginForm />
+    </Suspense>
   )
 }

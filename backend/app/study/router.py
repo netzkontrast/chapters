@@ -12,6 +12,7 @@ from app.study.schemas import (
     NoteCreate, NoteUpdate, NoteResponse
 )
 from app.services.open_pages import consume_open_page, can_publish
+from app.services.muse_progression import award_xp
 
 router = APIRouter(prefix="/study", tags=["Study"])
 
@@ -223,6 +224,9 @@ async def promote_draft(
     
     # Consume Open Page
     consume_open_page(current_user, db)
+    
+    # Award XP for publishing
+    xp_result = award_xp(db, current_user, "publish_chapter")
     
     db.commit()
     db.refresh(chapter)

@@ -1,4 +1,4 @@
-# 🎭 Muse — Creative Companion
+# 🪶 Muse — Creative Companion
 
 Muse is a gentle creative companion woven into Chapters. Not a chatbot. Not a coach. A presence.
 

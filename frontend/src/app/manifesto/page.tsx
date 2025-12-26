@@ -1,15 +1,43 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { AnimatedSection } from "@/components/AnimatedSection"
 import { Footer } from "@/components/Footer"
+import { Header } from "@/components/Header"
+import { AuthenticatedHeader } from "@/components/AuthenticatedHeader"
 
 export default function ManifestoPage() {
-  const currentYear = new Date().getFullYear()
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))
+      setIsAuthenticated(!!token)
+      setIsCheckingAuth(false)
+    }
+    checkAuth()
+  }, [])
+
+  if (isCheckingAuth) {
+    return null
+  }
   
   return (
     <div className="min-h-screen bg-background">
+      {isAuthenticated ? (
+        <AuthenticatedHeader title="Manifesto" />
+      ) : (
+        <>
+          <Header />
+          <div className="h-20" />
+        </>
+      )}
+      
       {/* Content */}
-      <article className="container mx-auto px-4 pt-32 pb-16 max-w-3xl">
+      <article className="container mx-auto px-4 pt-16 pb-16 max-w-3xl">
         <AnimatedSection>
           <h1 className="text-5xl font-serif font-bold text-foreground mb-8 text-balance">
             The Chapters Manifesto
@@ -19,7 +47,7 @@ export default function ManifestoPage() {
         <div className="prose prose-lg max-w-none font-serif space-y-8 prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground">
           <AnimatedSection delay={100}>
             <p className="text-xl leading-relaxed italic text-muted-foreground">
-              A calm, intentional space for people with inner lives, creative curiosity, and impressive taste.
+              A calm, intentional space for people with inner lives, creative curiosity, and discernment.
             </p>
           </AnimatedSection>
 

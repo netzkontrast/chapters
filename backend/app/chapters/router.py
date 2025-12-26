@@ -134,10 +134,10 @@ async def get_chapter(
     return response_data
 
 
-@router.get("", response_model=List[ChapterResponse])
+@router.get("", response_model=dict)
 async def list_chapters(
-    skip: int = 0,
-    limit: int = 20,
+    page: int = 1,
+    per_page: int = 20,
     author_id: int = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -147,15 +147,43 @@ async def list_chapters(
     
     - Optional filter by author_id
     - Returns chapters ordered by published_at (newest first)
+    - Paginated with metadata
     """
     query = db.query(Chapter)
     
     if author_id:
         query = query.filter(Chapter.author_id == author_id)
     
-    chapters = query.order_by(Chapter.published_at.desc()).offset(skip).limit(limit).all()
+    # Count total
+    total = query.count()
     
-    return chapters
+    # Apply pagination
+    offset = (page - 1) * per_page
+    chapters = query.order_by(Chapter.published_at.desc()).offset(offset).limit(per_page).all()
+    
+    # Build response with author info
+    chapters_data = []
+    for chapter in chapters:
+        chapters_data.append({
+            "id": chapter.id,
+            "author_id": chapter.author_id,
+            "title": chapter.title,
+            "mood": chapter.mood,
+            "theme": chapter.theme,
+            "published_at": chapter.published_at,
+            "blocks": chapter.blocks,
+            "author": {
+                "username": chapter.author.username,
+                "book_id": chapter.author.id
+            }
+        })
+    
+    return {
+        "chapters": chapters_data,
+        "total": total,
+        "page": page,
+        "per_page": per_page
+    }
 
 
 @router.patch("/{chapter_id}", response_model=ChapterResponse)

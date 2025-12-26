@@ -98,4 +98,19 @@ Tone preferences: ${preferences.tone.join(', ')}
   async getResonance(userId: number): Promise<{ userId: number; username: string; resonance: number }> {
     return apiClient.get(`/muse/resonance/${userId}`)
   },
+
+  /**
+   * Get current user's Muse level and XP
+   */
+  async getMuseLevel(): Promise<{
+    level: string
+    level_name: string
+    xp: number
+    xp_required: number
+    next_level: string | null
+    next_level_name: string | null
+    xp_to_next: number
+  }> {
+    return apiClient.get('/muse/level')
+  },
 }

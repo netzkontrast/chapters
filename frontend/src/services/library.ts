@@ -38,6 +38,7 @@ export interface ChapterDetail {
   is_bookmarked: boolean
   published_at: string
   blocks: ChapterBlock[]
+  themes?: Array<{ id: number; name: string; slug: string; emoji?: string }>
   author: {
     username: string
     book_id: string
@@ -144,43 +145,41 @@ export const libraryService = {
    * Heart a chapter
    */
   async heartChapter(chapterId: string): Promise<void> {
-    await apiClient.post(`/chapters/${chapterId}/heart`)
+    await apiClient.post(`/engagement/chapters/${chapterId}/heart`)
   },
 
   /**
    * Unheart a chapter
    */
   async unheartChapter(chapterId: string): Promise<void> {
-    await apiClient.delete(`/chapters/${chapterId}/heart`)
+    await apiClient.delete(`/engagement/chapters/${chapterId}/heart`)
   },
 
   /**
    * Bookmark a chapter
    */
   async bookmarkChapter(chapterId: string): Promise<void> {
-    await apiClient.post(`/chapters/${chapterId}/bookmark`)
+    await apiClient.post(`/engagement/chapters/${chapterId}/bookmark`)
   },
 
   /**
    * Remove bookmark
    */
   async unbookmarkChapter(chapterId: string): Promise<void> {
-    // Note: API uses bookmark ID, but we'll use chapter ID for simplicity
-    // In production, you'd need to get the bookmark ID first
-    await apiClient.delete(`/chapters/${chapterId}/bookmark`)
+    await apiClient.delete(`/engagement/chapters/${chapterId}/bookmark`)
   },
 
   /**
    * Follow a Book
    */
   async followBook(bookId: string): Promise<void> {
-    await apiClient.post(`/books/${bookId}/follow`)
+    await apiClient.post(`/engagement/books/${bookId}/follow`)
   },
 
   /**
    * Unfollow a Book
    */
   async unfollowBook(bookId: string): Promise<void> {
-    await apiClient.delete(`/books/${bookId}/follow`)
+    await apiClient.delete(`/engagement/books/${bookId}/follow`)
   },
 }

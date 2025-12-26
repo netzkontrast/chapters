@@ -180,9 +180,9 @@ Muse moments should feel special but gentle.
 ┌─────────────────────────────────┐
 │ [Ink Black Title]               │ ← Serif, 20px
 │ [Dusty Charcoal] by [Author]    │ ← Sans, 14px
-│                                  │
+│                                 │
 │ [Warm Gray preview text...]     │ ← Serif, 16px, 3 lines max
-│                                  │
+│                                 │
 │ [Soft Sage ♥ 12] [Ink Blue 📖]  │ ← Icons + counts
 └─────────────────────────────────┘
    ↑ Warm Gray border, 1px
@@ -209,10 +209,10 @@ Muse moments should feel special but gentle.
 
 ```
 ┌─────────────────────────────────┐
-│ 🪄 [Muted Clay icon]             │
-│                                  │
+│ 🪄 [Muted Clay icon]            │
+│                                 │
 │ [Ink Black suggestion text]     │
-│                                  │
+│                                 │
 │ [Ink Blue "Use this"] [Dismiss] │
 └─────────────────────────────────┘
   ↑ Muted Clay background at 8% opacity

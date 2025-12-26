@@ -1,15 +1,19 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { AnimatedSection } from "@/components/AnimatedSection"
+import { Header } from "@/components/Header"
 import { Footer } from "@/components/Footer"
+import { MuseLogo } from "@/components/muse/MuseLogo"
 
 export default function HomePage() {
   const currentYear = new Date().getFullYear()
   
   return (
     <main className="min-h-screen bg-background">
+      <Header />
+      
       {/* Hero Section */}
-      <section className="container mx-auto px-4 pt-32 pb-20 md:pt-40 md:pb-32">
+      <section className="container mx-auto px-4 pt-20 pb-16 md:pt-32 md:pb-24">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-serif font-bold text-foreground mb-6 text-balance animate-fade-in">
             A Social Platform Built for Depth, Not Dopamine
@@ -47,7 +51,7 @@ export default function HomePage() {
               description="One Open Page per day. No pressure to post constantly. Quality over quantity."
             />
             <FeatureCard
-              icon="✨"
+              icon={<MuseLogo size={48} animate={false} />}
               title="AI Companion"
               description="Muse assists your creative process without overriding your voice. Prompts, titles, and tone adjustments."
             />
@@ -97,11 +101,11 @@ export default function HomePage() {
   )
 }
 
-function FeatureCard({ icon, title, description }: { icon: string; title: string; description: string }) {
+function FeatureCard({ icon, title, description }: { icon: string | React.ReactNode; title: string; description: string }) {
   return (
     <div className="group bg-card rounded-lg p-6 border border-border hover:border-primary hover:shadow-lg transition-all duration-500 hover-lift">
-      <div className="text-4xl mb-4 transition-transform duration-300 group-hover:scale-110">
-        {icon}
+      <div className="text-4xl mb-4 transition-transform duration-300 group-hover:scale-110 flex items-center justify-start">
+        {typeof icon === 'string' ? icon : icon}
       </div>
       <h3 className="text-xl font-semibold text-foreground mb-2 transition-colors duration-300 group-hover:text-primary">
         {title}

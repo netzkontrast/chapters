@@ -2,7 +2,31 @@
 
 > **Everyone's a book. Each post is a chapter.**
 
-A calm, expressive, AI-assisted social platform built for depth, not dopamine.
+Chapters is a calm, intentional social platform for people with inner lives, curious minds, and discernment.
+
+It's built for those who prefer depth over noise, reading over scrolling, and reflection over performance.
+
+Discovery happens through ideas and writing, not algorithms or virality.
+
+At its core, Chapters is a place to read closely, think deeply, and write when you're ready.
+
+**Muse AI** lives quietly inside the experience as a creative and thinking companion, offering prompts, reflection, and support only when invited, never replacing the human voice.
+
+---
+
+## Who Chapters Is For
+
+Chapters is for people who:
+- read closely and think carefully
+- enjoy ideas, questions, and unfinished thoughts
+- value discernment over speed
+- want technology that respects attention
+
+You don't need to be a writer.  
+You don't need to publish.  
+You just need an inner life.
+
+---
 
 ## 📑 Table of Contents
 
@@ -154,7 +178,7 @@ Chapters is built with calm intentionality:
 - **Finite by Design** - No infinite scroll, all feeds are bounded
 - **Intentional Publishing** - One Open Page per day (max 3 stored)
 - **Privacy First** - Everything starts private in Study
-- **AI as Companion** - Muse assists but never overrides
+- **AI as Companion** - Muse assists but never overrides, only when invited
 - **Calm Engagement** - No trending, no leaderboards, no streaks
 
 ### Visual Identity
@@ -167,33 +191,26 @@ See [docs/visuals.md](docs/visuals.md) for complete design system.
 
 ## ✨ Key Features
 
-### For Creatives
+### For Writers, Readers, and Thinkers
 
 **Write with intention:**
 - **Open Pages** - Daily publishing allowance (3 max, 1 per day)
 - **Study** - Private workspace for drafts, notes, voice memos
 - **Rich Blocks** - Text, images, audio, video, quotes (max 12 per chapter)
 - **Edit Window** - 30 minutes to refine after publishing
-- **Muse AI** - Writing prompts, title suggestions, tone shaping
+- **Muse AI** - Writing prompts, title suggestions, tone shaping (optional, invited)
 
-**Share your work:**
-- **Chapters** - Rich, multimedia posts with mood and theme
-- **AI Covers** - DALL-E 3 generated chapter covers
-- **Book Profile** - Your living anthology with Inside Flap (bio)
-- **Privacy Controls** - Public or private Books
-
-**Build your craft:**
-- **Footnotes** - Private annotations on your own work
-- **Draft Promotion** - Polish in private, publish when ready
-- **No Pressure** - No streaks, no trending, no viral mechanics
-
-### For Readers
-
-**Discover with taste:**
+**Read and discover:**
 - **Library** - Visual bookshelf of Books you follow
 - **Quiet Picks** - 5 daily AI-curated recommendations (taste, not popularity)
 - **Spines** - Discover Books through their work, not profiles
 - **Page-Turn Reading** - Smooth, book-like experience on mobile
+
+**Share your work:**
+- **Chapters** - Rich, multimedia posts with mood and theme
+- **AI Covers** - DALL-E 3 generated chapter covers (optional)
+- **Book Profile** - Your living anthology with Inside Flap (bio)
+- **Privacy Controls** - Public or private Books
 
 **Engage thoughtfully:**
 - **Hearts** - Appreciate chapters that resonate (Soft Sage, not red)
@@ -337,61 +354,61 @@ See [docs/deployment.md](docs/deployment.md) for detailed instructions.
 ## 🖼️ Screenshots
 
 <details>
-<summary><b>Landing & About</b></summary>
+<summary><b>Landing Page</b></summary>
 
-![Landing Page](docs/screenshots/web-landing-top.png)
-![Landing Bottom](docs/screenshots/web-landing-bottom.png)
-![About Page](docs/screenshots/web-about.png)
-![Manifesto](docs/screenshots/web-manifesto.png)
+![Landing Page](docs/screenshots/web-landing.png)
+*A calm, intentional introduction to Chapters*
 
 </details>
 
 <details>
-<summary><b>Library Views</b></summary>
+<summary><b>Library - Your Reading Space</b></summary>
 
-![Bookshelf](docs/screenshots/web-library-bookshelf.png)
-![New Chapters](docs/screenshots/web-library-chapters-1.png)
-![Chapter Feed](docs/screenshots/web-library-chapters-2.png)
-![Quiet Picks](docs/screenshots/web-library-picks.png)
+![Library View](docs/screenshots/web-library.png)
+*Discover chapters through Bookshelf, New Chapters, Quiet Picks, Books & Spines, and Themes*
 
 </details>
 
 <details>
-<summary><b>Study Workspace</b></summary>
+<summary><b>Study - Your Private Workspace</b></summary>
 
-![Drafts](docs/screenshots/web-study-drafts.png)
-![Notes](docs/screenshots/web-study-notes.png)
+![Draft Editor](docs/screenshots/web-study-draft.png)
+*Write and refine your chapters in private with Muse's gentle guidance*
 
-</details>
-
-<details>
-<summary><b>Muse AI Onboarding</b></summary>
-
-![Muse Step 1](docs/screenshots/web-muse-onboarding-1.png)
-![Muse Step 2](docs/screenshots/web-muse-onboarding-2.png)
-![Muse Step 3](docs/screenshots/web-muse-onboarding-3.png)
-![Muse Step 4](docs/screenshots/web-muse-onboarding-4.png)
-![Muse Step 5](docs/screenshots/web-muse-onboarding-5.png)
+![Notes Manager](docs/screenshots/web-study-notes.png)
+*Capture thoughts, observations, and ideas in your Note Nook*
 
 </details>
 
 <details>
-<summary><b>Preferences</b></summary>
+<summary><b>Muse AI - Your Creative Companion</b></summary>
 
-![Book Settings](docs/screenshots/web-preferences-book.png)
-![Bindings](docs/screenshots/web-preferences-bindings.png)
-![Muse Settings](docs/screenshots/web-preferences-muse.png)
+![Muse Helper](docs/screenshots/web-muse.png)
+*Get suggestions for openings, titles, moods, and refinements - only when invited*
+
+</details>
+
+<details>
+<summary><b>Between the Lines - Thoughtful Conversations</b></summary>
+
+![BTL Conversations](docs/screenshots/web-blt.png)
+*Intimate 1:1 conversations with readers who resonate with your work*
+
+</details>
+
+<details>
+<summary><b>Preferences - Personalize Your Experience</b></summary>
+
+![Preferences](docs/screenshots/web-prefs.png)
+*Customize your Book profile, security settings, and Muse preferences*
 
 </details>
 
 ## 🤝 Contributing
 
-This is a carefully crafted platform with a specific vision. Before contributing:
+Chapters is built with intention and care. Before contributing, please read [CONTRIBUTING.md](CONTRIBUTING.md) to understand our values and approach.
 
-1. Read [docs/vision.md](docs/vision.md) to understand the philosophy
-2. Review [docs/visuals.md](docs/visuals.md) for design guidelines
-3. Check [docs/tasks.md](docs/tasks.md) for current status
-4. Ensure all tests pass before submitting PRs
+We welcome thoughtful contributions that align with our philosophy of calm, depth, and respect for attention.
 
 ## 📄 License
 

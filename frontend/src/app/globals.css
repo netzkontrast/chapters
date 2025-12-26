@@ -15,21 +15,21 @@
     --popover: #FAF8F4;
     --popover-foreground: #1C1C1C;
     
-    /* Primary = Ink Blue */
+    /* Primary = Ink Blue (links, actions, primary accent) */
     --primary: #2F3A4A;
     --primary-foreground: #FAF8F4;
     
-    /* Secondary = Soft Sage */
-    --secondary: #A8B8A0;
-    --secondary-foreground: #1C1C1C;
+    /* Secondary = Muted Clay (special moments) */
+    --secondary: #C08A6A;
+    --secondary-foreground: #FAF8F4;
     
     /* Muted = Warm Gray */
     --muted: #CFCAC2;
     --muted-foreground: #4A4A4A;
     
-    /* Accent = Muted Clay (use sparingly!) */
-    --accent: #C08A6A;
-    --accent-foreground: #FAF8F4;
+    /* Accent = Soft Sage (success, saved states) */
+    --accent: #A8B8A0;
+    --accent-foreground: #1C1C1C;
     
     --border: #CFCAC2;
     --input: #CFCAC2;
@@ -50,21 +50,21 @@
     --popover: #28251F;
     --popover-foreground: #E8E4DC;
     
-    /* Primary button - warm muted blue */
+    /* Primary - ink blue (slightly lighter for dark mode) */
     --primary: #5D7285;
     --primary-foreground: #FDFCFA;
     
-    /* Secondary - soft sage */
-    --secondary: #9AAA92;
-    --secondary-foreground: #1C1A17;
+    /* Secondary - warm clay */
+    --secondary: #C4967A;
+    --secondary-foreground: #FDFCFA;
     
     /* Muted - warm shadows */
     --muted: #2F2C26;
     --muted-foreground: #B8B3A8;
     
-    /* Accent - warm clay */
-    --accent: #C4967A;
-    --accent-foreground: #FDFCFA;
+    /* Accent - soft sage */
+    --accent: #9AAA92;
+    --accent-foreground: #1C1A17;
     
     --border: #3D3A33;
     --input: #3D3A33;

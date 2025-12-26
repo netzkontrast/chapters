@@ -1,12 +1,41 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import { AnimatedSection } from "@/components/AnimatedSection"
 import { Footer } from "@/components/Footer"
+import { Header } from "@/components/Header"
+import { AuthenticatedHeader } from "@/components/AuthenticatedHeader"
 
 export default function TermsPage() {
   const lastUpdated = "December 23, 2025"
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = document.cookie.split('; ').find(row => row.startsWith('auth_token='))
+      setIsAuthenticated(!!token)
+      setIsCheckingAuth(false)
+    }
+    checkAuth()
+  }, [])
+
+  if (isCheckingAuth) {
+    return null
+  }
 
   return (
     <div className="min-h-screen bg-background">
-      <article className="container mx-auto px-4 pt-32 pb-16 max-w-3xl">
+      {isAuthenticated ? (
+        <AuthenticatedHeader title="Terms of Service" />
+      ) : (
+        <>
+          <Header />
+          <div className="h-20" />
+        </>
+      )}
+      
+      <article className="container mx-auto px-4 pt-16 pb-16 max-w-3xl">
         <AnimatedSection>
           <h1 className="text-4xl font-serif font-bold text-foreground mb-4">
             Terms of Service
