@@ -389,7 +389,7 @@ See [docs/deployment.md](docs/deployment.md) for detailed instructions.
 <details>
 <summary><b>Between the Lines - Thoughtful Conversations</b></summary>
 
-![BTL Conversations](docs/screenshots/web-blt.png)
+![BTL Conversations](docs/screenshots/web-btl.png)
 *Intimate 1:1 conversations with readers who resonate with your work*
 
 </details>

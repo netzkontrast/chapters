@@ -1,6 +1,6 @@
 # Chapters Web App
 
-> Next.js 14 web application for Chapters.
+> Next.js 14 web application for Chapters. Built with TypeScript and Tailwind CSS.
 
 ## Tech Stack
 

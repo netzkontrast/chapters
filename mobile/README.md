@@ -1,6 +1,6 @@
 # Chapters Mobile App
 
-> React native app for Chapters.
+> React native app for Chapters. Built with Expo Router.
 
 ## Features
 

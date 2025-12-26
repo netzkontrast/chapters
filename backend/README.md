@@ -1,6 +1,7 @@
 # Chapters Backend API
 
-> FastAPI backend for Chapters.
+> FastAPI backend for Chapters. Built with Python 3.11, FastAPI, SQLAlchemy, PostgreSQL, Redis, and Docker.
+
 
 ## Features
 
