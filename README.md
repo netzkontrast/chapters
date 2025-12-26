@@ -17,10 +17,10 @@ At its core, Chapters is a place to read closely, think deeply, and write when y
 ## Who Chapters Is For
 
 Chapters is for people who:
-- read closely and think carefully
-- enjoy ideas, questions, and unfinished thoughts
-- value discernment over speed
-- want technology that respects attention
+- Read closely and think carefully
+- Enjoy ideas, questions, and unfinished thoughts
+- Value discernment over speed
+- Want technology that respects attention
 
 You don't need to be a writer.  
 You don't need to publish.  
@@ -276,8 +276,6 @@ Comprehensive documentation in the `docs/` folder:
 - **[visuals.md](docs/visuals.md)** - Design system and color palette
 - **[testing.md](docs/testing.md)** - Testing strategy and property tests
 - **[deployment.md](docs/deployment.md)** - Deployment guide
-- **[spines/](docs/spines/)** - People discovery feature
-- **[add-to-shelf/](docs/add-to-shelf/)** - Shelf curation feature
 
 ### Feature Glossary
 
@@ -342,14 +340,14 @@ See [docs/deployment.md](docs/deployment.md) for detailed instructions.
 
 ## 🎯 What Makes Chapters Different
 
-✅ **No infinite scrolling** - Bounded, page-based navigation  
-✅ **No trending lists** - Calm discovery through taste profiles  
-✅ **No streak pressure** - Create on your own schedule  
-✅ **No red hearts** - Soft Sage for gentle engagement  
-✅ **No viral mechanics** - Quality over virality  
-✅ **No pure white/black** - Warm, paper-like colors  
-✅ **No auto-publish AI** - Muse suggests, you decide  
-✅ **No cold outreach** - Between the Lines requires mutual trust  
+- **No infinite scrolling** - Bounded, page-based navigation  
+- **No trending lists** - Calm discovery through taste profiles  
+- **No streak pressure** - Create on your own schedule  
+- **No red hearts** - Soft Sage for gentle engagement  
+- **No viral mechanics** - Quality over virality  
+- **No pure white/black** - Warm, paper-like colors  
+- **No auto-publish AI** - Muse suggests, you decide  
+- **No cold outreach** - Between the Lines requires mutual trust  
 
 ## 🖼️ Screenshots
 

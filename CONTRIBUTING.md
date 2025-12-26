@@ -11,10 +11,10 @@ Chapters is a calm, book-inspired social platform built around reading, writing,
 It intentionally avoids feeds, virality, and attention-extractive design.
 
 We optimize for:
-- clarity over cleverness
-- depth over speed
-- restraint over feature growth
-- reading as participation
+- Clarity over cleverness
+- Depth over speed
+- Restraint over feature growth
+- Reading as participation
 
 ## Who This Is For
 
@@ -25,22 +25,22 @@ You don't need to be a creator to belong here. Reading closely and thinking care
 ## How We Work
 
 Good contributions:
-- reduce noise
-- simplify interactions
-- respect user attention
-- preserve the Book / Chapter metaphor
-- treat reading and thinking as equal to writing
+- Reduce noise
+- Simplify interactions
+- Respect user attention
+- Preserve the Book / Chapter metaphor
+- Treat reading and thinking as equal to writing
 
 We value thoughtful pull requests more than fast ones.
 
 ## What We're Not Building
 
 Please don't propose features that:
-- introduce infinite scroll or urgency loops
-- gamify attention or popularity
-- add follower mechanics or trending systems
-- optimize for engagement metrics at the expense of calm
-- treat AI as a replacement for human voice
+- Introduce infinite scroll or urgency loops
+- Gamify attention or popularity
+- Add follower mechanics or trending systems
+- Optimize for engagement metrics at the expense of calm
+- Treat AI as a replacement for human voice
 
 These ideas are out of scope by design.
 
