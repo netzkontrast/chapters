@@ -6,6 +6,7 @@ import { useThreadMessages, useSendMessage, useCloseThread, useThreads } from "@
 import { useUser } from "@/hooks/useUser"
 import { LoadingState } from "@/components/LoadingState"
 import { BTLThread } from "@/services/btl"
+import { moderationService } from "@/services/moderation"
 import { useToast } from "@/components/ui/toast"
 import { ConfirmModal } from "@/components/ui/ConfirmModal"
 import { useState } from "react"
@@ -19,6 +20,7 @@ export default function ConversationPage() {
   const [showBlockModal, setShowBlockModal] = useState(false)
   const [showReportModal, setShowReportModal] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
+  const [isReporting, setIsReporting] = useState(false)
 
   const { data: currentUser } = useUser()
   const { data: threads = [] } = useThreads()
@@ -79,13 +81,32 @@ export default function ConversationPage() {
   }
 
   const handleReport = async () => {
-    // TODO: Implement report functionality
-    showToast({
-      type: "success",
-      title: "Report submitted",
-      message: "Thank you for your report. We'll review it shortly.",
-    })
-    setShowReportModal(false)
+    if (!otherUserId) return
+
+    setIsReporting(true)
+    try {
+      await moderationService.createReport({
+        reported_user_id: otherUserId,
+        reason: "conversation_report",
+        details: `User reported conversation #${threadId} via UI.`,
+      })
+
+      showToast({
+        type: "success",
+        title: "Report submitted",
+        message: "Thank you for your report. We'll review it shortly.",
+      })
+    } catch (error) {
+      console.error("Failed to submit report:", error)
+      showToast({
+        type: "error",
+        title: "Failed to submit report",
+        message: "Please try again",
+      })
+    } finally {
+      setIsReporting(false)
+      setShowReportModal(false)
+    }
   }
 
   if (isLoading) {
@@ -162,6 +183,7 @@ export default function ConversationPage() {
         confirmText="Submit Report"
         cancelText="Cancel"
         variant="warning"
+        isLoading={isReporting}
       />
     </div>
   )
