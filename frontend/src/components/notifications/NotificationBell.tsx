@@ -64,6 +64,10 @@ export function NotificationBell() {
     btl_invite: COPY.NOTIFICATIONS.TYPES.BTL_INVITE
   }
 
+  const label = unreadCount > 0
+    ? `Notifications, ${unreadCount} unread`
+    : "Notifications, no unread messages"
+
   return (
     <div className="relative" ref={dropdownRef}>
       <Button 
@@ -71,8 +75,12 @@ export function NotificationBell() {
         size="sm"
         className="relative"
         onClick={() => setIsOpen(!isOpen)}
+        aria-label={label}
+        aria-expanded={isOpen}
+        aria-haspopup="dialog"
+        title="Notifications"
       >
-        <span className="text-lg">🔔</span>
+        <span className="text-lg" aria-hidden="true">🔔</span>
         <AnimatePresence>
           {unreadCount > 0 && (
             <motion.span
@@ -80,6 +88,7 @@ export function NotificationBell() {
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
               className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+              aria-hidden="true"
             >
               {unreadCount > 9 ? '9+' : unreadCount}
             </motion.span>
@@ -94,6 +103,8 @@ export function NotificationBell() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className="absolute right-0 mt-2 w-96 bg-card border border-border rounded-lg shadow-lg overflow-hidden z-50"
+            role="dialog"
+            aria-label="Notifications list"
           >
             <div className="p-4 border-b border-border">
               <h3 className="font-semibold text-foreground">{COPY.NOTIFICATIONS.TITLE}</h3>
@@ -102,7 +113,7 @@ export function NotificationBell() {
             <div className="max-h-96 overflow-y-auto">
               {notifications.length === 0 ? (
                 <div className="p-8 text-center text-muted-foreground">
-                  <div className="text-3xl mb-2">🔔</div>
+                  <div className="text-3xl mb-2" aria-hidden="true">🔔</div>
                   <p className="text-sm">{COPY.NOTIFICATIONS.EMPTY}</p>
                 </div>
               ) : (
@@ -119,31 +130,37 @@ export function NotificationBell() {
                         return (
                           <div
                             key={notification.id}
-                            className="p-3 hover:bg-muted/50 transition-colors cursor-pointer"
-                            onClick={() => {
-                              if (link) {
-                                setIsOpen(false)
-                                router.push(link)
-                              }
-                            }}
+                            className="relative p-3 hover:bg-muted/50 transition-colors group"
                           >
-                            <p className="text-sm text-foreground mb-1 line-clamp-2">
-                              {notification.message}
-                            </p>
-                            {notification.actor_username && (
-                              <p className="text-xs text-muted-foreground mb-1">
-                                from {notification.actor_username}
-                              </p>
+                            {link && (
+                              <Link
+                                href={link}
+                                className="absolute inset-0 z-0"
+                                onClick={() => setIsOpen(false)}
+                              >
+                                <span className="sr-only">View notification: {notification.message}</span>
+                              </Link>
                             )}
-                            <div className="flex items-center justify-between">
+                            <div className="relative z-10 pointer-events-none">
+                              <p className="text-sm text-foreground mb-1 line-clamp-2">
+                                {notification.message}
+                              </p>
+                              {notification.actor_username && (
+                                <p className="text-xs text-muted-foreground mb-1">
+                                  from {notification.actor_username}
+                                </p>
+                              )}
+                            </div>
+                            <div className="relative z-10 flex items-center justify-between pointer-events-none">
                               <p className="text-xs text-muted-foreground">
                                 {new Date(notification.created_at).toLocaleDateString()}
                               </p>
                               <Button
                                 size="sm"
                                 variant="ghost"
-                                className="h-6 text-xs"
+                                className="h-6 text-xs pointer-events-auto"
                                 onClick={(e) => handleMarkAsRead(notification.id, e)}
+                                aria-label="Mark as read"
                               >
                                 {COPY.NOTIFICATIONS.MARK_READ}
                               </Button>

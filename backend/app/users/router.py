@@ -201,3 +201,20 @@ async def update_cover_image(
     db.refresh(book)
 
     return {"message": "Cover image updated successfully", "cover_url": book.cover_image_url}
+
+@router.delete("/me", status_code=status.HTTP_200_OK)
+async def delete_account(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Delete current user account.
+
+    - Permanently deletes the user account
+    - Cascades to all related data (Book, Chapters, etc.) via DB foreign keys
+    """
+    # Delete user (cascade should handle the rest)
+    db.delete(current_user)
+    db.commit()
+
+    return {"message": "Account deleted successfully"}
