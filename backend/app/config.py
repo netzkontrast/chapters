@@ -36,6 +36,9 @@ class Settings(BaseSettings):
     # Sentry
     sentry_dsn: str | None = None
     
+    # CORS
+    cors_origins: list[str] = ["*"]
+
     # Rate Limits
     margin_rate_limit: int = 20  # per hour
     btl_invite_rate_limit: int = 3  # per day
