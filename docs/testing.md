@@ -283,19 +283,12 @@ npm run type-check
 
 ## Production Deployment
 
-### Backend (Render)
-See `docs/deployment.md` for detailed instructions.
+### Backend & Web (Vercel)
+See `docs/deployment.md` for detailed instructions on Vercel Monorepo deployment.
 
 ### Mobile (Expo EAS)
 ```bash
 cd mobile
 eas build --platform ios
 eas build --platform android
-```
-
-### Web (Netlify)
-```bash
-cd frontend
-npm run build
-# Deploy via Netlify dashboard
 ```

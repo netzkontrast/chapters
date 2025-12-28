@@ -135,13 +135,6 @@ npm run dev
 
 **Frontend will be available at:** http://localhost:3000
 
-### 4. Build for Production (Optional)
-
-```bash
-npm run build
-npm start
-```
-
 ---
 
 ## Mobile App Setup
@@ -301,138 +294,13 @@ poetry run alembic upgrade head
 
 ---
 
-## Troubleshooting
+## Production Deployment (Vercel)
 
-### Port Already in Use
+For production deployment, please refer to [docs/deployment.md](docs/deployment.md).
 
-**PostgreSQL (5432):**
-```bash
-# Windows
-netstat -ano | findstr :5432
-taskkill /PID <PID> /F
-
-# Mac/Linux
-lsof -ti:5432 | xargs kill -9
-```
-
-**Backend (8000):**
-```bash
-# Windows
-netstat -ano | findstr :8000
-taskkill /PID <PID> /F
-
-# Mac/Linux
-lsof -ti:8000 | xargs kill -9
-```
-
-**Frontend (3000):**
-```bash
-# Windows
-netstat -ano | findstr :3000
-taskkill /PID <PID> /F
-
-# Mac/Linux
-lsof -ti:3000 | xargs kill -9
-```
-
-### Docker Issues
-
-```bash
-# Restart Docker Desktop
-
-# Remove all containers and volumes
-docker-compose down -v
-
-# Rebuild containers
-docker-compose build --no-cache
-
-# View logs
-docker-compose logs backend
-docker logs chapters-postgres
-```
-
-### Backend Won't Start
-
-1. Check if PostgreSQL is running: `docker ps`
-2. Check database connection: `docker logs chapters-postgres`
-3. Verify `.env` file has correct `DATABASE_URL`
-4. Try resetting migrations: `poetry run alembic downgrade base && poetry run alembic upgrade head`
-
-### Frontend Build Errors
-
-```bash
-# Clear Next.js cache
-cd frontend
-rm -rf .next
-npm run dev
-```
-
-### Mobile App Won't Connect
-
-1. Make sure backend is running: `curl http://localhost:8000/health`
-2. If using physical device, update `API_URL` to your computer's IP
-3. Check firewall isn't blocking port 8000
-4. Restart Expo: `r` in terminal or shake device and tap "Reload"
-
----
-
-## Environment Variables Reference
-
-### Backend (.env)
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql://chapters:chapters@localhost:5432/chapters` |
-| `REDIS_URL` | Redis connection string | `redis://localhost:6379/0` |
-| `SECRET_KEY` | JWT secret key | `dev-secret-key` |
-| `OPENAI_API_KEY` | OpenAI API key for Muse | Optional |
-| `S3_BUCKET` | S3/R2 bucket for media | Optional |
-| `DEBUG` | Enable debug mode | `true` |
-
-### Frontend (.env.local)
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NEXT_PUBLIC_API_URL` | Backend API URL | `http://localhost:8000` |
-
-### Mobile (.env)
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `API_URL` | Backend API URL | `http://localhost:8000` |
-
----
-
-## Production Deployment
-
-### Backend
-
-```bash
-# Build Docker image
-docker build -t chapters-backend ./backend
-
-# Run with production settings
-docker run -p 8000:8000 \
-  -e DATABASE_URL=postgresql://... \
-  -e SECRET_KEY=... \
-  chapters-backend
-```
-
-### Frontend
-
-```bash
-cd frontend
-npm run build
-npm start
-```
-
-### Mobile
-
-```bash
-cd mobile
-eas build --platform ios
-eas build --platform android
-```
+Quick Summary:
+- **Backend & Web**: Deployed via Vercel Monorepo (push to main)
+- **Mobile**: Deployed via Expo EAS (`eas build`)
 
 ---
 
@@ -450,9 +318,6 @@ poetry run black .
 
 # Type checking
 poetry run mypy .
-
-# Create admin user (if you have a script)
-poetry run python scripts/create_admin.py
 ```
 
 ### Frontend

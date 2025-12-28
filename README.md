@@ -54,9 +54,9 @@ You just need an inner life.
 **Backend**: ✅ Complete (70+ tests passing)  
 **Mobile App**: ✅ Complete (React Native + Expo)  
 **Web App**: ✅ Complete (Next.js 14)  
-**Deployment**: 🚧 Ready for production setup
+**Deployment**: ✅ Ready for Vercel Monorepo
 
-All core features implemented and tested. Ready for deployment to Render (backend), Netlify (web), and Expo EAS (mobile).
+All core features implemented and tested. The project is configured as a monorepo ready for one-click deployment to Vercel (Backend + Frontend), with Expo EAS for mobile distribution.
 
 ## 🚀 Quick Start
 
@@ -146,7 +146,7 @@ chapters/
 │   ├── visuals.md        # Design system
 │   └── README.md         # Docs guide
 │
-└── docker-compose.yml    # Service orchestration
+└── vercel.json           # Vercel Monorepo Configuration
 ```
 
 ## 🛠️ Tech Stack
@@ -155,23 +155,23 @@ chapters/
 - **Framework**: FastAPI (Python 3.11+)
 - **Database**: PostgreSQL 15+ with pgvector
 - **ORM**: SQLAlchemy + Alembic migrations
-- **Cache & Queue**: Redis 7+
+- **Cache & Queue**: Redis 5+
 - **AI**: OpenAI API (GPT-4, DALL-E 3, embeddings)
 - **Storage**: S3-compatible (Cloudflare R2 / AWS S3)
 - **Testing**: pytest with property-based tests
 
 ### Mobile (Primary Client)
-- **Framework**: React Native with Expo
+- **Framework**: React Native with Expo 52
 - **Language**: TypeScript
 - **State**: React Query + Zustand
 - **Animations**: Reanimated 3
-- **Navigation**: Expo Router
+- **Navigation**: Expo Router 4
 
 ### Web (Secondary Client)
 - **Framework**: Next.js 14 (App Router)
 - **Styling**: Tailwind CSS + shadcn/ui
 - **Animations**: Framer Motion
-- **Deployment**: Netlify
+- **Deployment**: Vercel (Monorepo)
 
 ## 🎨 Design Philosophy
 
@@ -273,12 +273,12 @@ npx expo start --android # Android emulator
 Comprehensive documentation in the `docs/` folder:
 
 - **[vision.md](docs/vision.md)** - Product philosophy, manifesto, glossary, and copy guidelines
-- **[requirements.md](docs/requirements.md)** - Complete feature requirements (200+ requirements)
+- **[requirements.md](docs/requirements.md)** - Feature requirements (200+ requirements)
 - **[design.md](docs/design.md)** - System architecture and data models
-- **[tasks.md](docs/tasks.md)** - Implementation plan (41 tasks, mostly complete)
+- **[tasks.md](docs/tasks.md)** - Implementation plan status
 - **[visuals.md](docs/visuals.md)** - Design system and color palette
 - **[testing.md](docs/testing.md)** - Testing strategy and property tests
-- **[deployment.md](docs/deployment.md)** - Deployment guide
+- **[deployment.md](docs/deployment.md)** - Vercel & Expo deployment guide
 
 ### Feature Glossary
 
@@ -318,18 +318,11 @@ See [docs/README.md](docs/README.md) for a guide to all documentation.
 
 ## 🚀 Deployment
 
-### Backend (Render)
+### Backend & Web (Vercel Monorepo)
 ```bash
-# Set environment variables in Render dashboard
-# Deploy from GitHub with auto-deploy enabled
-# PostgreSQL and Redis managed services
-```
-
-### Web (Netlify)
-```bash
-cd frontend
-npm run build
-# Deploy via Netlify dashboard or CLI
+# Push to main branch
+# Vercel automatically deploys based on vercel.json
+# Ensure environment variables are set in Vercel Dashboard
 ```
 
 ### Mobile (Expo EAS)
