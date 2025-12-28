@@ -39,7 +39,7 @@ def test_user_registration():
     response = client.post("/auth/register", json={
         "email": test_email,
         "username": "testuser",
-        "password": "securepassword123"
+        "password": "SecurePassword123!"
     })
     
     assert response.status_code == 201, f"Expected 201, got {response.status_code}: {response.text}"
@@ -75,7 +75,7 @@ def test_duplicate_registration():
     response = client.post("/auth/register", json={
         "email": "testuser@example.com",
         "username": "testuser2",
-        "password": "securepassword123"
+        "password": "SecurePassword123!"
     })
     
     assert response.status_code == 400
@@ -87,7 +87,7 @@ def test_duplicate_registration():
     response = client.post("/auth/register", json={
         "email": "testuser2@example.com",
         "username": "testuser",
-        "password": "securepassword123"
+        "password": "SecurePassword123!"
     })
     
     assert response.status_code == 400
@@ -103,7 +103,7 @@ def test_user_login():
     # Login with correct credentials
     response = client.post("/auth/login", json={
         "email": "testuser@example.com",
-        "password": "securepassword123"
+        "password": "SecurePassword123!"
     })
     
     assert response.status_code == 200
@@ -195,7 +195,7 @@ def test_password_hashing():
         user = db.query(User).filter(User.email == "testuser@example.com").first()
         
         # Password should be hashed, not plain text
-        assert user.password_hash != "securepassword123"
+        assert user.password_hash != "SecurePassword123!"
         assert user.password_hash.startswith("$2b$")  # bcrypt hash
         
         print("✅ Password hashing works!")

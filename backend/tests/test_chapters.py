@@ -34,7 +34,7 @@ def register_and_login():
     response = client.post("/auth/register", json={
         "email": "chaptertest@example.com",
         "username": "chaptertest",
-        "password": "testpassword123"
+        "password": "TestPassword123!"
     })
     
     assert response.status_code == 201

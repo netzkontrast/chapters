@@ -34,7 +34,7 @@ def register_user(email: str, username: str):
     response = client.post("/auth/register", json={
         "email": email,
         "username": username,
-        "password": "testpassword123"
+        "password": "TestPassword123!"
     })
     assert response.status_code == 201
     return response.json()["access_token"]

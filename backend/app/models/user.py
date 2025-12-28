@@ -54,5 +54,10 @@ class User(Base):
     # Notifications
     notifications = relationship("Notification", foreign_keys="Notification.user_id", back_populates="user", cascade="all, delete-orphan")
     
+    @property
+    def book_id(self):
+        """Get book ID from relationship"""
+        return self.book.id if self.book else None
+
     def __repr__(self):
         return f"<User(id={self.id}, username='{self.username}')>"
