@@ -3,6 +3,7 @@
  */
 import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import * as SecureStore from 'expo-secure-store';
+import { router } from 'expo-router';
 import { ENV } from '@/config/env';
 
 // Token storage keys
@@ -71,7 +72,7 @@ apiClient.interceptors.response.use(
       } catch (refreshError) {
         // Refresh failed, clear tokens and redirect to login
         await clearTokens();
-        // TODO: Navigate to login screen
+        router.replace('/(auth)/login');
         return Promise.reject(refreshError);
       }
     }
