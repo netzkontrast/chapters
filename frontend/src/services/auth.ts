@@ -72,6 +72,14 @@ export const authService = {
   },
 
   /**
+   * Delete user account
+   */
+  async deleteAccount(): Promise<void> {
+    await apiClient.delete('/users/me')
+    auth.removeToken()
+  },
+
+  /**
    * Check if user is authenticated
    */
   isAuthenticated(): boolean {
