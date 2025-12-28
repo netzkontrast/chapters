@@ -16,8 +16,9 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MusePanel } from '@/components/composer/MusePanel';
-import { DraftBlock } from '@/services/api/study';
+import { DraftBlock, studyApi } from '@/services/api/study';
 import { colors, spacing, typography } from '@/theme';
+import { AxiosError } from 'axios';
 
 const MAX_BLOCKS = 12;
 const MAX_MEDIA_BLOCKS = 2;
@@ -31,6 +32,7 @@ export default function ComposeScreen() {
   const [blocks, setBlocks] = useState<DraftBlock[]>([]);
   const [showMuse, setShowMuse] = useState(false);
   const [selectedBlockIndex, setSelectedBlockIndex] = useState<number | null>(null);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   const mediaBlockCount = blocks.filter(
     b => b.block_type === 'image' || b.block_type === 'audio' || b.block_type === 'video'
@@ -97,6 +99,8 @@ export default function ComposeScreen() {
   };
 
   const handlePublish = () => {
+    if (isPublishing) return;
+
     if (!title.trim()) {
       Alert.alert('Missing Title', 'Please add a title for your chapter');
       return;
@@ -115,13 +119,41 @@ export default function ComposeScreen() {
         {
           text: 'Publish',
           onPress: async () => {
-            // TODO: Implement chapter publishing
-            Alert.alert('Success', 'Chapter published!', [
-              {
-                text: 'OK',
-                onPress: () => router.back(),
-              },
-            ]);
+            try {
+              setIsPublishing(true);
+
+              // 1. Create Draft
+              const draftBlocks = blocks.map((block, idx) => ({
+                position: idx,
+                block_type: block.block_type,
+                content: block.content,
+              }));
+
+              const draft = await studyApi.createDraft({
+                title,
+                mood: mood || undefined,
+                theme: theme || undefined,
+                blocks: draftBlocks,
+              });
+
+              // 2. Promote to Chapter
+              await studyApi.promoteDraft(draft.id);
+
+              Alert.alert('Success', 'Chapter published!', [
+                {
+                  text: 'OK',
+                  onPress: () => router.back(),
+                },
+              ]);
+            } catch (error) {
+              console.error('Publishing failed:', error);
+              const message = error instanceof AxiosError
+                ? error.response?.data?.detail || 'Failed to publish chapter'
+                : 'An unexpected error occurred';
+              Alert.alert('Error', message);
+            } finally {
+              setIsPublishing(false);
+            }
           },
         },
       ]
@@ -156,11 +188,14 @@ export default function ComposeScreen() {
             <Text style={styles.museButtonText}>✨ Muse</Text>
           </Pressable>
           <Pressable
-            style={styles.publishButton}
+            style={[styles.publishButton, isPublishing && styles.publishButtonDisabled]}
             onPress={handlePublish}
+            disabled={isPublishing}
             accessibilityLabel="Publish chapter"
           >
-            <Text style={styles.publishButtonText}>Publish</Text>
+            <Text style={styles.publishButtonText}>
+              {isPublishing ? 'Publishing...' : 'Publish'}
+            </Text>
           </Pressable>
         </View>
       </View>
@@ -320,6 +355,9 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     backgroundColor: colors.inkBlue,
     borderRadius: 8,
+  },
+  publishButtonDisabled: {
+    opacity: 0.5,
   },
   publishButtonText: {
     fontSize: typography.size.sm,

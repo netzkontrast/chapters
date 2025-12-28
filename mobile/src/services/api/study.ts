@@ -23,6 +23,9 @@ export interface Draft {
   id: string;
   user_id: string;
   title: string | null;
+  mood: string | null;
+  theme: string | null;
+  time_period: string | null;
   created_at: string;
   updated_at: string;
   blocks: DraftBlock[];
@@ -51,12 +54,18 @@ export interface NotesResponse {
 
 export interface CreateDraftRequest {
   title?: string;
-  blocks?: DraftBlock[];
+  mood?: string;
+  theme?: string;
+  time_period?: string;
+  blocks?: Partial<DraftBlock>[];
 }
 
 export interface UpdateDraftRequest {
   title?: string;
-  blocks?: DraftBlock[];
+  mood?: string;
+  theme?: string;
+  time_period?: string;
+  blocks?: Partial<DraftBlock>[];
 }
 
 export interface CreateNoteRequest {
