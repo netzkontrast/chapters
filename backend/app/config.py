@@ -1,6 +1,7 @@
 """Configuration management using Pydantic Settings"""
 import os
 from pathlib import Path
+from pydantic import field_validator, ValidationInfo
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -12,7 +13,7 @@ class Settings(BaseSettings):
     debug: bool = False
     
     # Database
-    database_url: str
+    database_url: str | None = None
     
     # Redis
     redis_url: str = "redis://localhost:6379/0"
@@ -53,6 +54,34 @@ class Settings(BaseSettings):
         extra="ignore"
     )
 
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def assemble_db_url(cls, v: str | None, info: ValidationInfo) -> str:
+        if isinstance(v, str) and v:
+            url = v
+        else:
+            # Fallback for Vercel Postgres
+            url = os.getenv("POSTGRES_URL", "")
+
+        if not url:
+             # If we are in a context where we might not need DB (e.g. build), maybe we shouldn't fail?
+             # But for runtime we need it.
+             # Pydantic will raise validation error if we return None or empty string for a required field
+             # (unless we made it optional, which we did).
+             # But let's check if we want to enforce it. The original code had `database_url: str`, enforcing it.
+             # We should probably raise ValueError if it's missing.
+             raise ValueError("DATABASE_URL or POSTGRES_URL is required")
+
+        if url.startswith("postgres://"):
+            url = url.replace("postgres://", "postgresql://", 1)
+        return url
+
 
 # Global settings instance
-settings = Settings()
+try:
+    settings = Settings()
+except Exception as e:
+    # During build time or if env vars are missing, this might fail.
+    # We print the error but let it crash if essential vars are missing.
+    print(f"Failed to load settings: {e}")
+    raise

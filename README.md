@@ -3,6 +3,7 @@
 > **Everyone's a book. Each post is a chapter.**
 
 [![AGENTS.md](https://img.shields.io/badge/🤖_AI_Agents-Read_Me_First-blue)](AGENTS.md)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fnetzkontrast%2Fchapters&env=DATABASE_URL,SECRET_KEY,OPENAI_API_KEY,S3_BUCKET,S3_ACCESS_KEY,S3_SECRET_KEY&project-name=chapters&repository-name=chapters)
 
 Chapters is a calm, intentional social platform for people with inner lives, curious minds, and discernment.
 
