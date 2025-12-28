@@ -7,6 +7,10 @@ from app.database import get_db
 from app.models import User, Book
 from app.auth.security import get_current_user, get_password_hash, verify_password
 from app.users.schemas import PasswordUpdate, BookProfileUpdate, BookProfileResponse
+from app.media.service import (
+    validate_content_type, generate_media_key,
+    upload_file_to_s3, generate_public_url
+)
 
 router = APIRouter(prefix="/users", tags=["User Settings"])
 
@@ -117,12 +121,28 @@ async def update_avatar(
         # Use preset avatar
         book.cover_image_url = avatar_path
     elif avatar_type == "custom" and file:
-        # TODO: Implement file upload to S3
-        # For now, just return a placeholder
-        raise HTTPException(
-            status_code=status.HTTP_501_NOT_IMPLEMENTED,
-            detail="Custom avatar upload not yet implemented. Use preset avatars for now."
+        # Validate content type
+        if not validate_content_type(file.content_type, "image"):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid content type. Allowed types: JPEG, PNG, GIF, WebP"
+            )
+
+        # Generate media key
+        media_key = generate_media_key(
+            current_user.id,
+            file.filename,
+            "image"
         )
+
+        # Upload to S3
+        if upload_file_to_s3(file.file, media_key, file.content_type):
+            book.cover_image_url = generate_public_url(media_key)
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to upload avatar"
+            )
     else:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -154,12 +174,33 @@ async def update_cover_image(
             detail="Book profile not found"
         )
     
-    # TODO: Implement file upload to S3
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Cover image upload not yet implemented"
+    # Validate content type
+    if not validate_content_type(file.content_type, "image"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid content type. Allowed types: JPEG, PNG, GIF, WebP"
+        )
+
+    # Generate media key
+    media_key = generate_media_key(
+        current_user.id,
+        file.filename,
+        "image"
     )
 
+    # Upload to S3
+    if upload_file_to_s3(file.file, media_key, file.content_type):
+        book.cover_image_url = generate_public_url(media_key)
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to upload cover image"
+        )
+
+    db.commit()
+    db.refresh(book)
+
+    return {"message": "Cover image updated successfully", "cover_url": book.cover_image_url}
 
 @router.delete("/me", status_code=status.HTTP_200_OK)
 async def delete_account(

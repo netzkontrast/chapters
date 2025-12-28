@@ -33,7 +33,7 @@ def register_and_login():
     response = client.post("/auth/register", json={
         "email": "studytest@example.com",
         "username": "studytest",
-        "password": "testpassword123"
+        "password": "TestPassword123!"
     })
     
     assert response.status_code == 201

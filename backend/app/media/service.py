@@ -115,6 +115,32 @@ def generate_signed_url(media_key: str, expires_in: int = 3600) -> str:
     return url
 
 
+def upload_file_to_s3(file_obj, media_key: str, content_type: str) -> bool:
+    """
+    Upload file directly to S3.
+
+    Args:
+        file_obj: File-like object (e.g. UploadFile.file)
+        media_key: S3 object key
+        content_type: MIME type
+
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        s3_client = get_s3_client()
+        s3_client.upload_fileobj(
+            file_obj,
+            settings.s3_bucket,
+            media_key,
+            ExtraArgs={'ContentType': content_type}
+        )
+        return True
+    except Exception as e:
+        print(f"Error uploading media {media_key}: {e}")
+        return False
+
+
 def delete_media(media_key: str) -> bool:
     """
     Delete media from S3.

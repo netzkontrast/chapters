@@ -13,6 +13,7 @@ tests = [
     ("Chapters", "tests/test_chapters.py"),
     ("Study System", "tests/test_study.py"),
     ("Engagement", "tests/test_engagement.py"),
+    ("User Settings", "tests/test_users.py"),
 ]
 
 print("=" * 70)
