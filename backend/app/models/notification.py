@@ -1,5 +1,5 @@
 """Notification model - rare, human, meaningful"""
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Enum as SQLEnum
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Enum as SQLEnum, Index
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 import enum
@@ -27,6 +27,9 @@ class Notification(Base):
     - No hearts, no follower changes, no performance stats
     """
     __tablename__ = "notifications"
+    __table_args__ = (
+        Index("ix_notifications_user_id_created_at", "user_id", "created_at"),
+    )
     
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
