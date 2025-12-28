@@ -5,7 +5,7 @@ from datetime import datetime, timezone, timedelta
 from typing import List
 
 from app.database import get_db
-from app.models import User, Chapter, ChapterBlock
+from app.models import User, Chapter, ChapterBlock, Book, Follow
 from app.auth.security import get_current_user
 from app.chapters.schemas import ChapterCreate, ChapterUpdate, ChapterResponse
 from app.services.open_pages import consume_open_page, can_publish
@@ -96,7 +96,22 @@ async def get_chapter(
             detail="Chapter not found"
         )
     
-    # TODO: Check access permissions based on Book privacy
+    # Check access permissions based on Book privacy
+    book = db.query(Book).filter(Book.user_id == chapter.author_id).first()
+    if book and book.is_private:
+        # Private book: only owner and followers can access
+        if book.user_id != current_user.id:
+            # Check if user follows this book
+            is_following = db.query(Follow).filter(
+                Follow.follower_id == current_user.id,
+                Follow.followed_id == book.user_id
+            ).first()
+
+            if not is_following:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="This book is private"
+                )
     
     # Check if current user has hearted this chapter
     is_hearted = db.query(Heart).filter(
