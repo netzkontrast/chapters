@@ -18,6 +18,11 @@ def get_s3_client():
     if _s3_client is None:
         # Only initialize if endpoint URL is provided
         endpoint = settings.s3_endpoint_url if settings.s3_endpoint_url else None
+
+        # Boto3 client can work without explicit keys if they are in env vars or instance metadata.
+        # However, for Vercel, we might not have them.
+        # If keys are None, we just pass None.
+
         _s3_client = boto3.client(
             's3',
             endpoint_url=endpoint,
@@ -63,6 +68,13 @@ def generate_upload_url(media_key: str, content_type: str, expires_in: int = 360
     Returns:
         Presigned upload URL
     """
+    if not settings.s3_bucket:
+         # Fail gracefully if S3 is not configured
+         # Raising an error is appropriate as the frontend should handle failure.
+         # But maybe we return None? The return type hint says str.
+         # Let's raise ValueError.
+         raise ValueError("S3_BUCKET is not configured. Media uploads are disabled.")
+
     s3_client = get_s3_client()
     url = s3_client.generate_presigned_url(
         'put_object',
@@ -83,6 +95,9 @@ def generate_public_url(media_key: str) -> str:
     
     For published chapters, media should be publicly accessible.
     """
+    if not settings.s3_bucket:
+        return ""
+
     if settings.s3_endpoint_url:
         # Cloudflare R2 or custom endpoint
         return f"{settings.s3_endpoint_url}/{settings.s3_bucket}/{media_key}"
@@ -102,6 +117,9 @@ def generate_signed_url(media_key: str, expires_in: int = 3600) -> str:
     Returns:
         Presigned download URL
     """
+    if not settings.s3_bucket:
+        return ""
+
     s3_client = get_s3_client()
     url = s3_client.generate_presigned_url(
         'get_object',
@@ -122,6 +140,9 @@ def delete_media(media_key: str) -> bool:
     Returns:
         True if successful, False otherwise
     """
+    if not settings.s3_bucket:
+        return False
+
     try:
         s3_client = get_s3_client()
         s3_client.delete_object(

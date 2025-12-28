@@ -9,7 +9,7 @@ from app.config import settings
 from app.models import Chapter, ChapterEmbedding, UserTasteProfile, User
 
 # Initialize OpenAI client
-client = OpenAI(api_key=settings.openai_api_key)
+client = OpenAI(api_key=settings.openai_api_key or "sk-missing-key-for-deployment")
 
 
 def extract_chapter_text(chapter: Chapter) -> str:
@@ -51,6 +51,9 @@ async def generate_chapter_embedding(chapter: Chapter, db: Session) -> List[floa
         Embedding vector (1536 dimensions)
     """
     try:
+        if not settings.openai_api_key:
+            return []
+
         # Extract text
         text = extract_chapter_text(chapter)
         
@@ -91,6 +94,9 @@ async def initialize_taste_profile(user: User, preferences: str, db: Session) ->
     Returns:
         Taste embedding vector
     """
+    if not settings.openai_api_key:
+        return []
+
     # Generate embedding from preferences
     response = client.embeddings.create(
         model="text-embedding-3-small",

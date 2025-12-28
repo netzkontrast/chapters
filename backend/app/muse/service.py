@@ -6,7 +6,7 @@ import redis
 from app.config import settings
 
 # Initialize OpenAI client
-client = OpenAI(api_key=settings.openai_api_key)
+client = OpenAI(api_key=settings.openai_api_key or "sk-missing-key-for-deployment")
 
 # Redis client for rate limiting
 redis_client = redis.from_url(settings.redis_url)
@@ -51,6 +51,9 @@ async def generate_prompts(context: Optional[str] = None, notes: Optional[List[s
     Returns:
         List of writing prompts
     """
+    if not settings.openai_api_key:
+        return ["Muse is not configured (missing OPENAI_API_KEY)."]
+
     # Build prompt
     system_prompt = """You are Muse, a thoughtful writing assistant for the Chapters platform. 
 Your role is to inspire writers with creative, meaningful prompts that encourage depth and introspection.
@@ -101,6 +104,9 @@ async def suggest_titles(content: str, mood: Optional[str] = None, theme: Option
     Returns:
         List of title suggestions
     """
+    if not settings.openai_api_key:
+        return ["Muse is not configured (missing OPENAI_API_KEY)."]
+
     system_prompt = """You are Muse, a thoughtful writing assistant. 
 Generate 5 compelling title suggestions that capture the essence of the content.
 Titles should be:
@@ -149,6 +155,9 @@ async def rewrite_text(text: str, style: Optional[str] = None, preserve_voice: b
     Returns:
         Rewritten text
     """
+    if not settings.openai_api_key:
+        return "Muse is not configured (missing OPENAI_API_KEY)."
+
     system_prompt = """You are Muse, a thoughtful writing assistant. 
 Your role is to help writers refine their work while preserving their unique voice.
 When rewriting:
