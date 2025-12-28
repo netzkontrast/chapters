@@ -2,6 +2,8 @@
 
 > **Everyone's a book. Each post is a chapter.**
 
+[![AGENTS.md](https://img.shields.io/badge/🤖_AI_Agents-Read_Me_First-blue)](AGENTS.md)
+
 Chapters is a calm, intentional social platform for people with inner lives, curious minds, and discernment.
 
 It's built for those who prefer depth over noise, reading over scrolling, and reflection over performance.
