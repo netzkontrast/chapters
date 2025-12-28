@@ -162,22 +162,22 @@ export default function SettingsPage() {
   const handleDeleteBook = async () => {
     setIsDeleting(true)
     try {
-      // TODO: Implement actual delete API call
-      // await authService.deleteAccount()
+      await authService.deleteAccount()
       showToast({
-        type: "info",
-        title: "Feature coming soon",
-        message: "Book deletion will be available in the next update",
+        type: "success",
+        title: "Book Deleted",
+        message: "Your account has been successfully deleted.",
       })
       setShowDeleteModal(false)
-      setIsDeleting(false)
+      // Redirect to home page after successful deletion
+      router.push("/")
     } catch (error: any) {
+      setIsDeleting(false)
       showToast({
         type: "error",
         title: "Failed to delete Book",
         message: error?.response?.data?.detail || "Please try again",
       })
-      setIsDeleting(false)
     }
   }
 

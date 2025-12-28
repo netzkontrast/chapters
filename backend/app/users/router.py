@@ -159,3 +159,21 @@ async def update_cover_image(
         status_code=status.HTTP_501_NOT_IMPLEMENTED,
         detail="Cover image upload not yet implemented"
     )
+
+
+@router.delete("/me", status_code=status.HTTP_200_OK)
+async def delete_account(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Delete current user account.
+
+    - Permanently deletes the user account
+    - Cascades to all related data (Book, Chapters, etc.) via DB foreign keys
+    """
+    # Delete user (cascade should handle the rest)
+    db.delete(current_user)
+    db.commit()
+
+    return {"message": "Account deleted successfully"}
