@@ -16,8 +16,7 @@ export default function LibraryScreen() {
   const router = useRouter();
 
   const handleBookPress = (bookId: string) => {
-    // TODO: Navigate to Book screen when implemented
-    console.log('Navigate to book:', bookId);
+    router.push(`/book/${bookId}`);
   };
 
   const handleChapterPress = (chapterId: string) => {
