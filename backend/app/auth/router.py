@@ -14,15 +14,17 @@ from app.auth.security import (
     verify_token,
     get_current_user,
 )
+from app.services.rate_limit import RateLimiter
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
-@router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED, dependencies=[Depends(RateLimiter(times=5, seconds=3600, key_prefix="register"))])
 async def register(user_data: UserRegister, db: Session = Depends(get_db)):
     """
     Register a new user account.
     
+    - Rate Limited: 5 attempts per hour per IP
     - Creates a new user with hashed password
     - Automatically creates an associated Book (profile)
     - Initializes with 3 Open Pages
@@ -83,11 +85,12 @@ async def register(user_data: UserRegister, db: Session = Depends(get_db)):
         )
 
 
-@router.post("/login", response_model=Token)
+@router.post("/login", response_model=Token, dependencies=[Depends(RateLimiter(times=10, seconds=60, key_prefix="login"))])
 async def login(credentials: UserLogin, db: Session = Depends(get_db)):
     """
     Login with email and password.
     
+    - Rate Limited: 10 attempts per minute per IP
     - Validates credentials
     - Returns access and refresh tokens
     """
