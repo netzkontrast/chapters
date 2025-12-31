@@ -55,24 +55,6 @@ app.add_middleware(RateLimitHeaderMiddleware)
 setup_error_handlers(app)
 
 
-# Create FastAPI app
-app = FastAPI(
-    title=settings.app_name,
-    description="A calm, expressive, AI-assisted social platform built for depth, not dopamine.",
-    version="0.1.0",
-    lifespan=lifespan
-)
-
-# Configure CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Configure appropriately for production
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
 @app.get("/")
 async def root():
     """Root endpoint"""
