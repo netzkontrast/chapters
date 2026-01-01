@@ -1,0 +1,4 @@
+## 2024-05-23 - Duplicate FastAPI App Initialization
+**Vulnerability:** `backend/app/main.py` initializes the `FastAPI` app twice. The second initialization overwrites the first one, which had important middleware (RequestLoggingMiddleware, RateLimitHeaderMiddleware) and error handlers configured. The second initialization also hardcodes CORS origins to `["*"]`, bypassing the configuration from `settings.cors_origins`.
+**Learning:** Duplicate variable assignment in global scope can silently drop configuration and security controls. This likely happened due to a merge conflict resolution or copy-paste error.
+**Prevention:** Use linters that detect variable redeclaration in the same scope (e.g., Pylint `W0621` or similar, though strictly top-level redefinition is valid Python but usually a bug). Review merge diffs carefully.
