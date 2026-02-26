@@ -37,8 +37,7 @@ export function AddToShelfButton({ bookId, variant = "outline", size = "default"
 
   if (isLoading) {
     return (
-      <Button variant={variant} size={size} disabled>
-        <span className="text-base mr-2">📚</span>
+      <Button variant={variant} size={size} isLoading>
         Loading...
       </Button>
     )
@@ -49,7 +48,7 @@ export function AddToShelfButton({ bookId, variant = "outline", size = "default"
       variant={onShelf ? "default" : variant}
       size={size}
       onClick={handleToggle}
-      disabled={addToShelf.isPending || removeFromShelf.isPending}
+      isLoading={addToShelf.isPending || removeFromShelf.isPending}
       className={`transition-all ${isAnimating ? 'scale-95' : 'scale-100'}`}
     >
       <span className="text-base mr-2">{onShelf ? "✓" : "📚"}</span>
